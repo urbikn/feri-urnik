@@ -7,32 +7,38 @@
 # Distributed under terms of the MIT license.
 
 """
-    Downloads the data of the URL:  https://feri.um.si/urniki5/groups.php
+    Downloads the data of the URL:  https://feri.um.si/urniki5/groups.php.
+
+    The website uses AJAX so we need to get the javascript data and fill out the form.
 """
 
-import requests
-import datetime
-
+from selenium import webdriver
+from selenium.webdriver.support.ui import Select
+import time
 
 # Predefined variables (! CHANGE ONLY WHEN REALLY NEEDED !)
-now = datetime.datetime.now()
-session = requests.session()
-file_name = "test.html"
+phantomjs_path = "lib/PhantomJS/bin/phantomjs"
+url = "https://feri.um.si/urniki5/groups.php"
+program = "RAČUNALNIŠTVO IN INFORMACIJSKE TEHNOLOGIJE (BU20)"
+letnik = "1"
 
 def download():
     # Data needed to get information from site
-    url = "https://feri.um.si/urniki5/groups.php"
-    current_datetime = "%d.%d.%d" % (now.day, now.month, now.year)
-    params = {"branch_id":58,
-              "branch_index":1,
-              "branch_selector":1,
-              "date_field": current_datetime,
-              "branch_response": "{\"result\":[1,[{\"name\":\"RIT+UN+-+RAČUNALNIŠTVO+IN+INFORMACIJSKE+TEHNOLOGIJE+(BU20)\",\"code\":\"BU20\",\"branch_id\":\"58\",\"year\":\"1\"}],{\"\":+[]}]"
-              }
+    driver = webdriver.PhantomJS(phantomjs_path)
+    driver.get(url)
+    
+    # Gets input values to add values
+    programInput = Select(driver.find_element_by_id("program"))
+    letnikInput = Select(driver.find_element_by_id("year"))
+    
+    # Sets values of input and sleeps for a few seconds so new data can be shown on site
+    programInput.select_by_visible_text(program)
+    time.sleep(1)
+    letnikInput.select_by_visible_text(letnik)
+    time.sleep(3)
+    
+    inputTedenskiUrnik = driver.find_element_by_xpath("//input[@value='Prikaži tedenski urnik']")
+    inputTedenskiUrnik.click()
 
-    site = session.post(url, data=params)
-
-    # returns website data as string
-    data = str(site.content, "utf-8", errors="repeat")
-    return data
+    return driver.page_source
 
