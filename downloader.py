@@ -9,12 +9,8 @@
 """
     Downloads the data of the URL:  https://feri.um.si/urniki5/groups.php.
 
-    The website uses AJAX so we need to get the javascript data and fill out the form.
 """
-
-from selenium import webdriver
-from selenium.webdriver.support.ui import Select
-import time
+import requests
 
 # Predefined variables (! CHANGE ONLY WHEN REALLY NEEDED !)
 phantomjs_path = "lib/PhantomJS/bin/phantomjs"
@@ -22,23 +18,22 @@ url = "https://feri.um.si/urniki5/groups.php"
 program = "RAČUNALNIŠTVO IN INFORMACIJSKE TEHNOLOGIJE (BU20)"
 letnik = "1"
 
+params = {
+	"date_field":"11.12.2017",
+	"iCal_data":"group_week",
+	"pagename":"groups",
+	"year_index":"1",
+	"year_response":"3",
+	"branch_id":"58",
+	"branch_index":"1"
+}
+
+headers = {"User-Agent":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:57.0) Gecko/20100101 Firefox/57.0"}
+
 def download():
-    # Data needed to get information from site
-    driver = webdriver.PhantomJS(phantomjs_path)
-    driver.get(url)
-    
-    # Gets input values to add values
-    programInput = Select(driver.find_element_by_id("program"))
-    letnikInput = Select(driver.find_element_by_id("year"))
-    
-    # Sets values of input and sleeps for a few seconds so new data can be shown on site
-    programInput.select_by_visible_text(program)
-    time.sleep(1)
-    letnikInput.select_by_visible_text(letnik)
-    time.sleep(3)
-    
-    inputTedenskiUrnik = driver.find_element_by_xpath("//input[@value='Prikaži tedenski urnik']")
-    inputTedenskiUrnik.click()
+    s = requests.Session()
+    s.headers.update(headers)
 
-    return driver.page_source
+    r = s.post("https://feri.um.si/urniki5/lib/iCal.php?r=group_ical&type=group_week", data=params)
 
+    return(r.content)
