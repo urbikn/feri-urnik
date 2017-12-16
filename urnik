@@ -1,0 +1,120 @@
+#! /bin/sh
+#
+# script.sh
+# Copyright (C) 2017 urbikn <urbikn@knuples.net>
+#
+# Distributed under terms of the MIT license.
+#
+
+            
+OPTS=`getopt -o anh --long all-courses,no-day,help: -n 'parse-options' -- "$@"`
+
+if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
+
+eval set -- "$OPTS"
+
+ALL_COURSES=false
+NO_DAY=false
+HELP=false
+USE_SED=true
+
+while true; do
+  case "$1" in
+    -a | --all-courses ) ALL_COURSES=true; shift ;;
+    -n | --no-day )    NO_DAY=true; shift ;;
+    -h | --help ) HELP=true; shift ;;
+    -- ) shift; break ;;
+    * ) break ;;
+  esac
+done
+
+help () {
+    usage="$(basename 'urnik') [-a] [-n] [-h] -- Program to get my schedule for school (urnik pač):
+    \n\t-a, --all-courses\tShows entire schedule for program RIT
+    \n\t-n, --no-day\t\tDisables the function of showing todays schedule
+    \n\n\nExamples:
+    \n\turnik -a\tGets the days schedule for the program, not just mine
+    \n\turnik -an\tGets the entire schedule for the program, not just mine
+    \n\nCopyright (C) Urban Knupleš
+    \nDistributed under terms of the MIT license."
+
+    echo $usage
+    USE_SED=false
+}
+
+getDay () {
+
+    day=$(date | cut -c 1-3)
+
+    if [ "$day" = "pon" ]
+    then
+        if $1; then
+            begin_line=3;
+            end_line=11;
+        else
+            begin_line=64;
+            end_line=72;
+        fi
+    elif [ "$day" = "tor" ]
+    then
+        if $1; then
+            begin_line=14;
+            end_line=22;
+        else
+            begin_line=75;
+            end_line=83;
+        fi
+    elif [ "$day" = "sre" ]
+    then
+        if $1; then
+            begin_line=25;
+            end_line=33;
+        else
+            begin_line=86;
+            end_line=94;
+        fi
+    elif [ "$day" = "če" ]
+    then
+        if $1; then
+            begin_line=36;
+            end_line=44;
+        else
+            begin_line=97;
+            end_line=105;
+        fi
+    elif [ "$day" = "pet" ]
+    then
+        if $1; then
+            begin_line=47;
+            end_line=55;
+        else
+            begin_line=108;
+            end_line=116;
+        fi
+    else
+        USE_SED=false
+        echo "\nDanes nimaš pouka retard. Uporabi [-n], da vidiš cel tedenski urnik ( ki se še vedno ni zgodil, so who cares )\n"
+    fi
+}
+
+if $HELP; then
+    help
+elif $ALL_COURSES; then
+    if $NO_DAY; then
+        begin_line=1;
+        end_line=55;
+    else
+        getDay true
+    fi
+else
+    if $NO_DAY; then
+        begin_line=64;
+        end_line=116;
+    else
+        getDay false
+    fi
+fi
+
+if $USE_SED; then
+    sed -n "$begin_line,$end_line p" < urnik.txt | less -S
+fi
