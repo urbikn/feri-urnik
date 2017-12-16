@@ -28,7 +28,6 @@ class Course:
     def setValues(self, course):
         self.classDuraction(course[0], course[1])
         self.setDate(str(course[0]))
-    
         self.courseName = course[2].split(",")[0]
         self.place = " ".join(course[2].split(",")[1:]).lstrip() # slices up words between ",", selects 1-> and joins them together
         self.group = course[3]
@@ -50,3 +49,8 @@ class Course:
                 num = tmp_num
 
         return num
+
+    def printValues(self):
+        for i in self.__dict__.keys():
+            print(self.__dict__[i])
+
