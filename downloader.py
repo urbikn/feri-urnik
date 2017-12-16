@@ -11,15 +11,10 @@
 
 """
 import requests
-
-# Predefined variables (! CHANGE ONLY WHEN REALLY NEEDED !)
-phantomjs_path = "lib/PhantomJS/bin/phantomjs"
-url = "https://feri.um.si/urniki5/groups.php"
-program = "RAČUNALNIŠTVO IN INFORMACIJSKE TEHNOLOGIJE (BU20)"
-letnik = "1"
+import time
 
 params = {
-	"date_field":"11.12.2017",
+	"date_field": time.strftime("%d.%m.%Y"),
 	"iCal_data":"group_week",
 	"pagename":"groups",
 	"year_index":"1",
