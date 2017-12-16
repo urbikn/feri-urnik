@@ -141,8 +141,7 @@ def makeTable(classes, entire):
     output.append(string)
 
 def main(argv=sys.argv):
-   # file = open(dl.download(), "r") # Opens file that was downloaded from the net
-    file = open("data.ics", "r")
+    file = open(dl.download(), "r") # Opens file that was downloaded from the net
     
     classes = exctr.getCourseData(file)
     
