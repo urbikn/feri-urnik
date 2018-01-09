@@ -21,51 +21,49 @@ import time
 import os
 import sys, getopt
 
-filename = "data.ics"
-url = "http://wise-tt.com/wtt_um_feri/"
-course = 'RIT UN'
-
-def download():
+class Download:
+    browser = None
+    course = None
+    filename = None
     profile = webdriver.FirefoxProfile()
-
-    profile.set_preference("browser.download.folderList", 2)
-    profile.set_preference("browser.download.manager.showWhenStarting", False)
-    profile.set_preference("browser.download.dir", os.getcwd())
-    profile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/octet-stream, text/calendar,application/vnd.sus-calendar,text/x-vcalendar")
-
     options = Options()
-    options.add_argument("--headless")
+    url = "http://wise-tt.com/wtt_um_feri/"
 
-    browser = webdriver.Firefox(firefox_profile=profile, firefox_options=options)
+    def __init__(self, course,filename = "data.ics"):
+        self.profile.set_preference("browser.download.folderList", 2)
+        self.profile.set_preference("browser.download.manager.showWhenStarting", False)
+        self.profile.set_preference("browser.download.dir", os.getcwd())
+        self.profile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/octet-stream, text/calendar,application/vnd.sus-calendar,text/x-vcalendar")
+        self.options.add_argument("--headless")
+        self.course = course
+        self.filename = filename
+
+    def setUp(self):
+        self.browser = webdriver.Firefox(firefox_profile=self.profile, firefox_options=self.options)
+        self.browser.get(self.url)
     
-    browser.get("http://wise-tt.com/wtt_um_feri/")
-    wait = WebDriverWait(browser, 4)
-    
-    print("Starting click for course.")
-    element = wait.until(EC.presence_of_element_located((By.ID, "form:j_idt85_label")))
-    element.click()
-    print("Clicked course menu.")
+    def downloadUrnik(self):
+        wait = WebDriverWait(self.browser, 4)
+        print("Starting click for course.")
+        element = wait.until(EC.presence_of_element_located((By.ID, "form:j_idt85_label")))
+        element.click()
+        print("Clicked course menu.")
 
+        print("\nStarting click for {}.".format(self.course))
+        elementType = wait.until(EC.presence_of_element_located((By.ID, "form:j_idt85_6")))
+        elementType.click()
+        print("Clicked {}.".format(self.course))
 
-    print("\nStarting click for {}.".format(course))
-    elementType = wait.until(EC.presence_of_element_located((By.ID, "form:j_idt85_6")))
-    elementType.click()
-    print("Clicked {}.".format(course))
+        time.sleep(5)
+        print("\nStarting to download file")
+        elementType = wait.until(EC.presence_of_element_located((By.ID, "form:j_idt151")))
+        elementType.click()
+        print("\nDownloaded file.")
 
-    time.sleep(5)
-    print("\nStarting to download file")
-    elementType = wait.until(EC.presence_of_element_located((By.ID, "form:j_idt151")))
-    elementType.click()
-    print("\nDownloaded file.")
-
-    time.sleep(2)
-    os.rename("calendar.ics", filename)
-
-    return filename
+        time.sleep(2)
+        os.rename("calendar.ics", self.filename)
 
 if __name__ == "__main__":
-    if( len(sys.argv) - 1 == 1 ):
-        pass
-
-    if download():
-        print("Successfuly finished downloading.")
+    download = Download("RIT UN")
+    download.setUp()
+    download.downloadUrnik()
