@@ -77,7 +77,7 @@ class Extractor:
 
 
 if __name__ == "__main__":
-    with open("data.ics") as file:
+    with open("data/data.ics") as file:
         extractor = Extractor({"UID","DTSTAMP","LOCATION"})
         extractor.extractFromFile(file)
         extractor.getClassList()[0].printValues()

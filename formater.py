@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*-
 # vim:fenc=utf-8
 #
 # Copyright © 2017 urbikn <urbikn@knuples.net>
@@ -13,150 +12,153 @@
     URL: https://feri.um.si/urniki5/groups.php
 """
 
-import downloader as dl
 import extractor as exctr
-from course import * 
+from lib.course import * 
 import sys
-
-# This class works specificly with data taken from this site
-# URL: https://feri.um.si/urniki5/groups.php
-
-groups = [ # Only fix this is the university is retarded
-        [
-            ["angleščina", 1],
-            ["matematika", 1]
-        ],
-        ["programi", 3],
-        ["spleta", 3],
-        ["oprema", 3]
-]
-
-output = [] # Had to make it global, because passing a variable in function doesn't work. Fuck.
-            # Oh and each entiry represents a new days schedual
+import json
 
 
 # TODO: make anything left of multiple groups
 # TODO:  Pls fix spagetti code... PLS!!
-
-def checkGroup(course):
-    name = course.courseName
-    group = course.group
-    
-    if "PR" in group: # The class isn't a group but a regular lecture
-        return True
-
-    elif groups[0][0][0].upper() in name : # Course is english
-        group_data = ((group.split("UN SE")[1]).split(",")[0]).lstrip()[0] # Long story short, it just gets the number of the group
-        if groups[0][0][1] == int(group_data): # If groups is the same
-            return True
-
-    elif groups[0][1][0].upper() in name : # Course is Math
-        if "UN LV" in group:
-            typeGroup = "UN LV"
-        else:
-            typeGroup = "UN SV"
-        group_data = ((group.split(typeGroup)[1]).split(",")[0]).lstrip()[0] # Long story short, it just gets the number of the group
-        if groups[0][1][1] == int(group_data): # If groups is the same
-            return True
-
-    elif "RV" in group:
-        try:
-            group_data = group.split("RV")[2].lstrip()[0]
-            for crs in groups[1:]:
-                if crs[0].upper() in name:
-                    if crs[1] == int(group_data):
-                        return True
-        except:
-            print("fail")
-
-    return False
-
-def createCell(lengt, data):
-    string = "#"
-    
-    if data in ["#"," ","&","-","=","$"]:
-        for i in range(0,lengt):
-            string += data
-
-        string = string[:-1] 
-    else:
-        end = lengt - len(data) - 1
-      #  if end % 2 != 0: end += 1 # If the number is odd
-
-        for i in range(0, end):
-            if i % 2 == 0:
-                data = "{} ".format(data)
-            else:
-                data = " {}".format(data)
-
-        string = "#%s" % data
-
-    return string
-
-def makeTable(classes, entire):
-    string = [""]*9 # The height of the table
-    day = 0
-    date = classes[0].date # The date of the first element in list so it can start comparing with others
-
-    for _class_ in classes[ 0:len(classes) - 1 ]:
-        string[0] = "\n\n{}: {}".format(_class_.date, ["PON","TOR","SRE","ČET","PET"][day])
-
-        length = _class_.longestStr() + 6 # So it can be proparly formated in the table
-        values = ["#"," ", _class_.time, _class_.courseName, _class_.place, _class_.group, " ","#"] # All values needed for a formated "class"
-        
-        if entire:
-            # Sees if the schedual changed to a new day
-            if(str(date) < str(_class_.date)):
-
-                # Before it can do anything new, it needs to end the table with "#"
-                for index in range(1,9):
-                    string[index] += "#"
-                
-                output.append(string)
-                string = [""]*9
-                day = day + 1
-                date = str(_class_.date) # Adds new date for different day
-
-            for index in range(1,9):
-                string[index] += createCell(length, values[index - 1])
-        elif checkGroup(_class_):
-            # Sees if the schedual changed to a new day
-            if(str(date) < str(_class_.date)):
-
-                # Before it can do anything new, it needs to end the table with "#"
-                for index in range(1,9):
-                    string[index] += "#"
-                
-                output.append(string)
-                string = [""]*9
-                day = day + 1
-                date = str(_class_.date) # Adds new date for different day
-
-            for index in range(1,9):
-                string[index] += createCell(length, values[index - 1])
-
-    for index in range(1,9):
-        string[index] += "#"
-
-    output.append(string)
-
-def main(argv=sys.argv):
-    file = open(dl.download(), "r") # Opens file that was downloaded from the net
-    
-    classes = exctr.getCourseData(file)
-    
 # TODO: MAKE COLORS!
-    
-    makeTable(classes, True)
-    output.append("\n\n\n")
-    makeTable(classes, False)
 
-    with open("urnik.txt", "w") as file:
-        file.seek(0)
-        file.truncate()
-        for i in output:
-            for j in i:
-                file.write(j + "\n")
+
+class Formater:
+    daysSchedual = []  #each entiry represents a new days schedual
+    jsonData = None
+    groups = []
+    classes = None
+    classType = None
+
+    def __init__(self, classes, jsonFile):
+        self.classes = classes
+        self.jsonData = json.load(jsonFile)
+        
+        groups = self.jsonData["groups"]
+        for ID in groups:
+            self.groups.append(groups[ID])
+    
+        # LV -> Laboratorijske vaje
+        # SV -> Seminarske vaje
+        # RV -> Računalniške vaje
+        # SE -> Seminar
+        # PR -> Predavanje
+        self.classType = ["PR", "UN LV", "UN SV", "UN RV", "UN SE"]
+
+
+    def __checkGroup(self, course):
+        className = course.courseName
+        classGroup = course.group
+        
+        # For students who aren't Erasmus
+        if "erasmus" in classGroup.lower():
+            return False
+
+        for groupType in self.classType:
+            if groupType in classGroup:
+                typeGroup = groupType
+        
+        if "PR" == typeGroup:
+            return True
+        elif typeGroup in {"UN LV", "UN SV", "UN SE", "UN RV"}:
+                groupNumber = int(classGroup.split(typeGroup)[1].strip()[0])
+                for group in self.groups:
+                    if( group[0] in className.lower() and group[1] == groupNumber):
+                        return True
+        return False
+
+
+    def __createCell(self, lenght, data):
+        string = "#"
+        
+        if data in ["#"," ","&","-","=","$"]:
+            for i in range(0,lenght):
+                string += data
+
+            string = string[:-1] 
+        else:
+            end = lenght - len(data) - 1
+          #  if end % 2 != 0: end += 1 # If the number is odd
+
+            for i in range(0, end):
+                if i % 2 == 0:
+                    data = "{} ".format(data)
+                else:
+                    data = " {}".format(data)
+
+            string = "#%s" % data
+
+        return string
+
+
+    def __makeTable(self, personal=False):
+        string = [""]*9 # The height of the table
+        day = 0
+        date = self.classes[0].date # The date of the first element in list so it can start comparing with others
+
+        for _class_ in self.classes:
+            string[0] = "\n\n{}: {}".format(_class_.date, ["PON","TOR","SRE","ČET","PET"][day])
+
+            lenght = _class_.longestStr() + 6 # So it can be proparly formated in the table
+            values = ["#"," ", _class_.time, _class_.courseName, _class_.place, _class_.group, " ","#"] # All values needed for a formated "class"
+            
+            if not personal or self.__checkGroup(_class_):
+                # Sees if the schedual changed to a new day
+                if(str(date) < str(_class_.date)):
+
+                    # Before it can do anything new, it needs to end the table with "#"
+                    for index in range(1,9):
+                        string[index] += "#"
+                    
+                    self.daysSchedual.append(string)
+                    string = [""]*9
+                    day = day + 1
+                    date = str(_class_.date) # Adds new date for different day
+
+                for index in range(1,9):
+                    string[index] += self.__createCell(lenght, values[index - 1])
+
+        for index in range(1,9):
+            string[index] += "#"
+
+        self.daysSchedual.append(string)
+
+
+
+
+
+    def createSchedual(self):
+        self.__makeTable()        
+        self.daysSchedual.append("\n\n\n")
+        self.__makeTable(True)        
+
+
+
+    def getSchedual(self):
+        return self.daysSchedual
+
+# def main(argv=sys.argv):
+
+    # with open("urnik.txt", "w") as file:
+        # file.seek(0)
+        # file.truncate()
+        # for i in output:
+            # for j in i:
+                # file.write(j + "\n")
+
+
 
 if __name__ == "__main__":
-    main()
+    files = open("config/userData.json")
+    
+    with open("data/data.ics") as file:
+        extractor = exctr.Extractor({"UID","DTSTAMP","LOCATION"})
+        extractor.extractFromFile(file)
+        classes = extractor.getClassList()
+
+    formate = Formater(classes, files)
+    formate.createSchedual()
+    for i in formate.getSchedual():
+        for j in i:
+            print(j)
+

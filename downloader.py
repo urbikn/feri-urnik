@@ -29,10 +29,10 @@ class Download:
     options = Options()
     url = "http://wise-tt.com/wtt_um_feri/"
 
-    def __init__(self, course,filename = "data.ics"):
+    def __init__(self, course,filename = "data/data.ics"):
         self.profile.set_preference("browser.download.folderList", 2)
         self.profile.set_preference("browser.download.manager.showWhenStarting", False)
-        self.profile.set_preference("browser.download.dir", os.getcwd())
+        self.profile.set_preference("browser.download.dir", os.getcwd() + "/data")
         self.profile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/octet-stream, text/calendar,application/vnd.sus-calendar,text/x-vcalendar")
         self.options.add_argument("--headless")
         self.course = course
@@ -61,7 +61,7 @@ class Download:
         print("\nDownloaded file.")
 
         time.sleep(2)
-        os.rename("calendar.ics", self.filename)
+        os.rename("data/calendar.ics", self.filename)
 
 if __name__ == "__main__":
     download = Download("RIT UN")
