@@ -50,18 +50,27 @@ class Download:
 
     def downloadUrnik(self):
         wait = WebDriverWait(self.browser, 4)
+
+        # Waits for browser to load
+        wait.until(EC.presence_of_element_located((By.ID, "content")))
+
         print("Starting click for course.")
-        element = wait.until(EC.presence_of_element_located((By.ID, "form:j_idt85_label")))
+        numberId = self.browser.execute_script("return $('.noBorderBasicTable')[1].children[0].children[1].children[0].children[0].children[2].id.match(/\d+/)[0]")
+
+        element = wait.until(EC.presence_of_element_located((By.ID, "form:j_idt"+ numberId +"_label")))
         element.click()
         print("Clicked course menu.")
 
         print("\nStarting click for {}.".format(self.course))
-        elementType = wait.until(EC.presence_of_element_located((By.ID, "form:j_idt85_6")))
+        elementType = wait.until(EC.presence_of_element_located((By.ID, "form:j_idt"+ numberId +"_6")))
         elementType.click()
         print("Clicked {}.".format(self.course))
 
         print("\nStarting to download file")
-        elementType = wait.until(EC.element_to_be_clickable((By.ID, "form:j_idt151")))
+        buttonDownloadId = self.browser.execute_script("return $(\"span:contains('iCal-teden')\").parent()[1].id")
+
+        time.sleep(2)
+        elementType = wait.until(EC.element_to_be_clickable((By.ID, buttonDownloadId)))
         elementType.click()
         print("\nDownloaded file.")
 
