@@ -71,15 +71,20 @@ class Extractor:
                 data.setValues(tmp)
                 self.__classList.append( data )
 
-                pass
-
             else:
                 try:
                     # Fuck newlines
                     course.append(line.strip("\n"))
                 except:
                     pass
+    
+    def getDummyList(self):
+        self.__classList = []
+        for index in range(1,6):
+            data = Course(index, "", "Danes nimaš pouka.", "", "")
+            self.__classList.append( data )
 
+        return self.getClassList()
 
 if __name__ == "__main__":
     with open("../../data/data.ics") as file:

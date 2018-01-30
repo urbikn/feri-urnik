@@ -133,16 +133,22 @@ class Formater:
         self.daysSchedual.append("\n\n\n")
         self.__makeTable(True)        
 
-
+    
+    def createDummySchedual(self):
+        self.__makeTable()        
+        self.daysSchedual.append("\n\n\n")
+        self.__makeTable()        
 
     def getSchedual(self):
         return self.daysSchedual
 
 
+
+
 if __name__ == "__main__":
     from extractor import Extractor
 
-    mainPath = os.path.abspath(os.path.join( path, ".."))
+    mainPath = os.path.abspath(os.path.join( os.getcwd() , "../../"))
     print(mainPath)
 
     jsonPath = os.path.join(mainPath, "config", "userData.json")
@@ -154,15 +160,23 @@ if __name__ == "__main__":
         extractor = Extractor({"UID","DTSTAMP","LOCATION"})
         extractor.extractFromFile(file)
         classes = extractor.getClassList()
-
+        
+    dummyClass = False
     if( len(classes) == 0 ):
         print("\nThe extractor returned an empty list.")
         print("The program didn't have any data to extract.")
         print("No data to format.")
+        classes = extractor.getDummyList()
+        dummyClass = True
+    
+    formate = Formater(classes, files)
+
+    if( dummyClass ):
+        formate.createDummySchedual()
     else:
-        formate = Formater(classes, files)
         formate.createSchedual()
-        for i in formate.getSchedual():
-            for j in i:
-                print(j)
+
+    for i in formate.getSchedual():
+        for j in i:
+            print(j)
 

@@ -33,15 +33,15 @@ class Download:
 
 
 
-    def __init__(self, course, downloadPath = "../../data/"):
+    def __init__(self, course, downloadPath):
         self.profile.set_preference("browser.download.folderList", 2)
         self.profile.set_preference("browser.download.manager.showWhenStarting", False)
         self.profile.set_preference("browser.download.dir", downloadPath)
         self.profile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/octet-stream, text/calendar,application/vnd.sus-calendar,text/x-vcalendar")
         self.options.add_argument("--headless")  # Option to hide browser
         self.course = course
-        self.filename = downloadPath + "calendar.ics"
-        self.renameFile = downloadPath + "data.ics"
+        self.filename = downloadPath + "/calendar.ics"
+        self.renameFile = downloadPath + "/data.ics"
 
 
 
@@ -94,10 +94,11 @@ class Download:
         print("\nDownloaded file.")
 
         time.sleep(2)
- #       os.rename(self.filename, self.renameFile)
+        os.rename(self.filename, self.renameFile)
 
 if __name__ == "__main__":
-    download = Download("RIT UN")
+    mainPath = os.path.abspath(os.path.join( os.getcwd(), "../../data"))
+    download = Download("RIT UN", mainPath)
     download.setUp()
     download.downloadUrnik()
     download.stop()
