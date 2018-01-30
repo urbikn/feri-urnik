@@ -38,7 +38,7 @@ class Download:
         self.profile.set_preference("browser.download.manager.showWhenStarting", False)
         self.profile.set_preference("browser.download.dir", downloadPath)
         self.profile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/octet-stream, text/calendar,application/vnd.sus-calendar,text/x-vcalendar")
-        # self.options.add_argument("--headless")  # Option to hide browser
+        self.options.add_argument("--headless")  # Option to hide browser
         self.course = course
         self.filename = downloadPath + "calendar.ics"
         self.renameFile = downloadPath + "data.ics"

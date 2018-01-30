@@ -128,8 +128,6 @@ class Formater:
 
 
 
-
-
     def createSchedual(self):
         self.__makeTable()        
         self.daysSchedual.append("\n\n\n")
@@ -157,9 +155,14 @@ if __name__ == "__main__":
         extractor.extractFromFile(file)
         classes = extractor.getClassList()
 
-    formate = Formater(classes, files)
-    formate.createSchedual()
-    for i in formate.getSchedual():
-        for j in i:
-            print(j)
+    if( len(classes) == 0 ):
+        print("\nThe extractor returned an empty list.")
+        print("The program didn't have any data to extract.")
+        print("No data to format.")
+    else:
+        formate = Formater(classes, files)
+        formate.createSchedual()
+        for i in formate.getSchedual():
+            for j in i:
+                print(j)
 

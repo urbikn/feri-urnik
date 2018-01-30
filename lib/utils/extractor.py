@@ -53,7 +53,7 @@ class Extractor:
             tmpList.append(entiry)
 
         return tmpList
-
+    
     def getClassList(self):
         return self.__classList
     
@@ -85,6 +85,14 @@ if __name__ == "__main__":
     with open("../../data/data.ics") as file:
         extractor = Extractor({"UID","DTSTAMP","LOCATION"})
         extractor.extractFromFile(file)
-        extractor.getClassList()[0].printValues()
+
+        if( len(extractor.getClassList()) == 0):
+            print("\nThe list is empty.")
+            print("The program didn't have any data to extract.")
+            print("Looks like you don't have any classes this week.\n")
+        else:
+            extractor.getClassList()[0].printValues()
+
+
 
 

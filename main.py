@@ -13,30 +13,37 @@ import lib.course as course
 import os, sys, inspect
 
 if __name__ == "__main__":
-    download = downloader.Download("RIT UN")
+    download = downloader.Download("RIT UN", "data")  
     download.setUp()
     download.downloadUrnik()
-
-    print(sys.path)
+    download.stop()
 
     with open("data/data.ics") as file:
         print("Start Extracting file")
-        extractor = Extractor({"UID","DTSTAMP","LOCATION"})
+        extractor = extractor.Extractor({"UID","DTSTAMP","LOCATION"})
         extractor.extractFromFile(file)
         
         print("Successfuly extracted file")
-        data = extractor.getClassList()
+        extrData = extractor.getClassList()
 
     files = open("config/userData.json")
     
     print("Starting to format raw data")
-    formater = Formater(data, files)
-    formater.createSchedual()
 
-    print("Writing formated data into file")
+    if(len(extrData) == 0):
+        print("No data to format. Looks like you have a free week.")
+        print("Still writting data to file (even thought it's nothing).")
+        schedual = None
+    else:
+        formater = formater.Formater(extrData, files)
+        formater.createSchedual()
+        print("Writing formated data into file")
+        schedual = formater.getSchedual()
+
+    
     with open("data/urnik.txt", "w") as file:
         file.seek(0)
         file.truncate()
-        for i in formater.getSchedual():
+        for i in schedual:
             for j in i:
                 file.write(j + "\n")
