@@ -7,7 +7,7 @@
 # Distributed under terms of the MIT license.
 
 """
-    Downloads the data of the URL:  https://feri.um.si/urniki5/groups.php.
+    Downloads the data of the URL: http://wise-tt.com/wtt_um_feri/
 
 """
 from selenium import webdriver
@@ -16,6 +16,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.firefox.options import Options
+from selenium.common.exceptions import *
 
 import time
 import os
@@ -25,28 +26,46 @@ class Download:
     browser = None
     course = None
     filename = None
+    renameFile = None
     profile = webdriver.FirefoxProfile()
     options = Options()
     url = "http://wise-tt.com/wtt_um_feri/"
 
 
 
-    def __init__(self, course,filename = "../../data/data.ics"):
+    def __init__(self, course, downloadPath = "../../data/"):
         self.profile.set_preference("browser.download.folderList", 2)
         self.profile.set_preference("browser.download.manager.showWhenStarting", False)
-        self.profile.set_preference("browser.download.dir", os.getcwd() + "/../data")
+        self.profile.set_preference("browser.download.dir", downloadPath)
         self.profile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/octet-stream, text/calendar,application/vnd.sus-calendar,text/x-vcalendar")
-        # self.options.add_argument("--headless")
+        # self.options.add_argument("--headless")  # Option to hide browser
         self.course = course
-        self.filename = filename
+        self.filename = downloadPath + "calendar.ics"
+        self.renameFile = downloadPath + "data.ics"
+
 
 
 
     def setUp(self):
-        self.browser = webdriver.Firefox(firefox_profile=self.profile, firefox_options=self.options)
-        self.browser.get(self.url)
+        try:
+            self.browser = webdriver.Firefox(firefox_profile=self.profile, firefox_options=self.options)
+            self.browser.get(self.url)
+        except WebDriverException:
+            import urllib
+            print("\nError: Cannot connect to website. turn on your shitty internet or maybe they changed the URL.\nInvestigating this crap...\n")
+
+            try:
+                urllib.request.urlopen("http://google.com") # Google can't go down right
+            except urllib.error.URLError:
+                print("Fix your shitty network connection!")
+            else:
+                print("Yup, they changed the URL!")
+
+            sys.exit()
  
 
+    def stop(self):
+        self.browser.quit()
 
     def downloadUrnik(self):
         wait = WebDriverWait(self.browser, 4)
@@ -69,15 +88,16 @@ class Download:
         print("\nStarting to download file")
         buttonDownloadId = self.browser.execute_script("return $(\"span:contains('iCal-teden')\").parent()[1].id")
 
-        time.sleep(2)
+        
         elementType = wait.until(EC.element_to_be_clickable((By.ID, buttonDownloadId)))
         elementType.click()
         print("\nDownloaded file.")
 
         time.sleep(2)
-        os.rename("../data/calendar.ics", self.filename)
+ #       os.rename(self.filename, self.renameFile)
 
 if __name__ == "__main__":
     download = Download("RIT UN")
     download.setUp()
     download.downloadUrnik()
+    download.stop()
