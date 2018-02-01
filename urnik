@@ -7,7 +7,7 @@
 #
 
             
-OPTS=`getopt -o anh --long all-courses,no-day,help: -n 'parse-options' -- "$@"`
+OPTS=$(getopt -o anhd --long all-courses,no-day,download,help: -n 'parse-options' -- "$@")
 
 if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
 
@@ -16,12 +16,14 @@ eval set -- "$OPTS"
 ALL_COURSES=false
 NO_DAY=false
 HELP=false
+DOWNLOAD=false
 USE_SED=true
 
 while true; do
   case "$1" in
     -a | --all-courses ) ALL_COURSES=true; shift ;;
     -n | --no-day )    NO_DAY=true; shift ;;
+    -d | --download ) DOWNLOAD=true; shift ;;
     -h | --help ) HELP=true; shift ;;
     -- ) shift; break ;;
     * ) break ;;
@@ -32,6 +34,7 @@ help () {
     usage="$(basename 'urnik') [-a] [-n] [-h] -- Program to get my schedule for school (urnik pač):
     \n\t-a, --all-courses\tShows entire schedule for program RIT
     \n\t-n, --no-day\t\tDisables the function of showing todays schedule
+    \n\t-d, --download\t\tDownloads the weeks schedule
     \n\n\nExamples:
     \n\turnik -a\tGets the days schedule for the program, not just mine
     \n\turnik -an\tGets the entire schedule for the program, not just mine
@@ -97,8 +100,14 @@ getDay () {
     fi
 }
 
+# DON'T REMOVE COMMENT!
+# [PUT PATH HERE]
+
 if $HELP; then
     help
+elif $DOWNLOAD; then
+    python3 main.py
+    USE_SED=false
 elif $ALL_COURSES; then
     if $NO_DAY; then
         begin_line=1;
@@ -116,5 +125,5 @@ else
 fi
 
 if $USE_SED; then
-    sed -n "$begin_line,$end_line p" < urnik.txt | less -S
+    sed -n "$begin_line,$end_line p" < data/urnik.txt | less -S
 fi

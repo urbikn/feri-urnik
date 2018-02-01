@@ -1,0 +1,78 @@
+#! /bin/sh
+#
+# setup.sh
+# Copyright (C) 2018 urbikn <urbikn@knuples.net>
+#
+# Distributed under terms of the MIT license.
+#
+
+RED='\033[1;31m'
+GREEN='\033[0;32m'
+LGREEN='\033[1;32m'
+NC='\033[0m' # No color
+downloadPath=$(pwd)
+
+# -----------------------
+# Checks if script exists in /usr/bin
+# -----------------------
+
+sudo find /usr/bin -name "urnik" | grep .
+
+if [[ -n $? ]]; then
+    printf "${RED}Found command urnik in system\n"
+    printf "removing command urnik from /usr/bin${NC}\n"
+    sudo rm /usr/bin/urnik
+fi
+
+# -----------------------
+# Check if selenium installed
+# -----------------------
+
+printf "${GREEN}\nChecking if selenium installed:\n${NC}"
+pip3 list 2> /dev/null | grep -E "selenium" 
+
+if [ $? -eq 1 ]; then
+    printf "${RED}Starting to download selenium via pip3:"
+    pip3 install selenium
+else
+    printf "${LGREEN}You got it."
+fi
+printf "\n${NC}"
+
+# -----------------------
+# Start moving script directory
+# -----------------------
+
+cd ~
+homePath=$(pwd)
+
+printf "${GREEN}\nMoving downloaded directory to ${homePath}.\n${NC}"
+cp -r "$downloadPath" "$homePath"
+cd "$homePath/urnik"
+
+# Removes git repo and script setup from directory
+rm -rf .git* setup
+
+# Changes command inside urnik shell (command is cd ..path..)
+sed -i '/#.\[PUT.*/c\cd '"$(pwd)" urnik
+
+
+printf "${GREEN}\nMoving script 'urnik' to /usr/bin.\n${NC}"
+sudo mv urnik /usr/bin
+
+mkdir data 2> /dev/null
+
+# -----------------------
+# Download schedual
+# -----------------------
+printf "\n"
+read -t 10 -p "Would you like to start downloading schedual now? (y/N): " download;
+
+printf "\n"
+if [ "$download" = "y" ]; then
+    printf "${RED}Starting process...${NC}"
+    urnik -d
+else
+    printf "${RED}REMEMBER: ${NC}Before calling command/script, download schedual with command ${GREEN}urnik -d${NC}"
+fi
+printf "\n\n"
