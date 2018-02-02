@@ -16,9 +16,11 @@ downloadPath=$(pwd)
 # Checks if script exists in /usr/bin
 # -----------------------
 
-sudo find /usr/bin -name "urnik" | grep .
+script=$(sudo find /usr/bin -name "urnik" | grep .)
 
-if [[ -n $? ]]; then
+
+echo $script
+if [ "$script" ]; then
     printf "${RED}Found command urnik in system\n"
     printf "removing command urnik from /usr/bin${NC}\n"
     sudo rm /usr/bin/urnik
@@ -47,7 +49,8 @@ cd ~
 homePath=$(pwd)
 
 printf "${GREEN}\nMoving downloaded directory to ${homePath}.\n${NC}"
-cp -r "$downloadPath" "$homePath"
+cp -r "$downloadPath" "$homePath" 2> /dev/null
+#mv $homePath/feri-urnik urnik
 cd "$homePath/urnik"
 
 # Removes git repo and script setup from directory
