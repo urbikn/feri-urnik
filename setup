@@ -16,15 +16,15 @@ downloadPath=$(pwd)
 # Checks if script exists in /usr/bin
 # -----------------------
 
-script=$(sudo find /usr/bin -name "urnik" | grep .)
+#script=$(sudo find /usr/bin -name "urnik" | grep .)
 
 
-echo $script
-if [ "$script" ]; then
-    printf "${RED}Found command urnik in system\n"
-    printf "removing command urnik from /usr/bin${NC}\n"
-    sudo rm /usr/bin/urnik
-fi
+#echo $script
+#if [ "$script" ]; then
+    #printf "${RED}Found command urnik in system\n"
+    #printf "removing command urnik from /usr/bin${NC}\n"
+    #sudo rm /usr/bin/urnik
+#fi
 
 # -----------------------
 # Check if selenium installed
@@ -66,16 +66,16 @@ sudo mv urnik /usr/bin
 mkdir data 2> /dev/null
 
 # -----------------------
-# Download schedual
+# Download schedule
 # -----------------------
 printf "\n"
-read -t 10 -p "Would you like to start downloading schedual now? (y/N): " download;
+read -t 10 -p "Would you like to start downloading schedule now? (y/N): " download;
 
 printf "\n"
 if [ "$download" = "y" ]; then
     printf "${RED}Starting process...${NC}"
     urnik -d
 else
-    printf "${RED}REMEMBER: ${NC}Before calling command/script, download schedual with command ${GREEN}urnik -d${NC}"
+    printf "${RED}REMEMBER: ${NC}Before calling command/script, download schedule with command ${GREEN}urnik -d${NC}"
 fi
 printf "\n\n"

@@ -125,5 +125,5 @@ else
 fi
 
 if $USE_SED; then
-    sed -n "$begin_line,$end_line p" < data/urnik.txt | less -S
+	(sed -n "$begin_line,$end_line p" < data/urnik.txt && less -S) 2> /dev/null || printf "\nWon't work, did you forget to download data?\n> Use command urnik -d\n\n"
 fi
