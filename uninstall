@@ -1,0 +1,27 @@
+#! /bin/sh
+#
+# uninstall.sh
+# Copyright (C) 2018 urbikn <urbikn@knuples.net>
+#
+# Distributed under terms of the MIT license.
+#
+
+RED='\033[1;31m'
+GREEN='\033[0;32m'
+LGREEN='\033[1;32m'
+NC='\033[0m' # No color
+currentPath=$(pwd)
+
+# -----------------------
+# Remove script urnik from /usr/bin
+# -----------------------
+
+printf "${RED}Removing command urnik from /usr/bin. Require sudo access:\n\n${NC}"
+
+sudo rm /usr/bin/urnik
+
+printf "${RED}\nRemoving ${currentPath}\n\n"
+
+rm -rf ${currentPath}
+
+printf "Removed the program.\n\n${GREEN}Goodbye :c\n\n${NC}"
