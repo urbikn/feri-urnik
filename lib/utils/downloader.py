@@ -86,13 +86,17 @@ class Download:
         print("Clicked {}.".format(self.course))
 
         print("\nStarting to download file")
-        buttonDownloadId = self.browser.execute_script("return $(\"span:contains('iCal-teden')\").parent()[0].id")
-        
+
+        # Sometimes it's the first, sometimes it's the second... 
+        buttonDownloadId = self.browser.execute_script("""return $("span:contains('iCal-teden')").parent()[0].id""")
+        if buttonDownloadId == "":
+            buttonDownloadId = self.browser.execute_script("""return $("span:contains('iCal-teden')").parent()[1].id""")
+
         time.sleep(1)
         elementType = wait.until(EC.element_to_be_clickable((By.ID, buttonDownloadId)))
         elementType.click()
+        
         print("\nDownloaded file.")
-
         time.sleep(2)
         os.rename(self.filename, self.renameFile)
 
