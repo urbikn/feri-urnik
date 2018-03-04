@@ -21,6 +21,7 @@ from selenium.common.exceptions import *
 import time
 import os
 import sys, getopt
+from pathlib import Path
 
 class Download:
     browser = None
@@ -68,7 +69,11 @@ class Download:
     def stop(self):
         self.browser.quit()
 
-    def downloadUrnik(self):
+    def downloadUrnik(self, n=0):
+        if n == 3:
+            print( "Couldn't download file" )
+            return
+
         wait = WebDriverWait(self.browser, 4)
 
         # Waits for browser to load
@@ -87,7 +92,12 @@ class Download:
         print("Clicked {}.".format(self.course))
 
         print("\nStarting to download file")
+<<<<<<< HEAD
         # It just works, their dynamic website is shitty beyond belief
+=======
+
+        # Sometimes it's the first, sometimes it's the second... 
+>>>>>>> tester
         buttonDownloadId = self.browser.execute_script("""return $("span:contains('iCal-teden')").parent()[0].id""")
         if buttonDownloadId == "":
             buttonDownloadId = self.browser.execute_script("""return $("span:contains('iCal-teden')").parent()[1].id""")
@@ -96,6 +106,19 @@ class Download:
         elementType = wait.until(EC.element_to_be_clickable((By.ID, buttonDownloadId)))
         elementType.click()
         
+<<<<<<< HEAD
+=======
+        # Checks if downloaded file exists
+        file = Path(self.filename)
+        if  not file.exists():
+            print("...")
+            time.sleep(1)
+            print( "\nDownloaded file doesn't exist\n-------------------------\nStarting new download\n" )
+            self.downloadUrnik(n)
+            return
+        # TODO: CHECK IF FILE EXISTS, IF NOT, RERUN PROGRAM
+
+>>>>>>> tester
         print("\nDownloaded file.")
         time.sleep(2)
         os.rename(self.filename, self.renameFile)

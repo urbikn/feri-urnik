@@ -6,6 +6,8 @@
 #
 # Distributed under terms of the MIT license.
 
+from datetime import datetime
+
 class Course:
     def __init__(self, date = None, time = None, courseName = None, place = None, group = None):
         self.date = date
@@ -38,7 +40,8 @@ class Course:
         month = date[4:6]
         day = date[6:8]
 
-        self.date = "{}.{}.{}".format(day,month,year)
+        string = "{}.{}.{}".format(day,month,year)
+        self.date = datetime.strptime(string, "%d.%m.%Y")
     
     # Finds the longest string so we know what the widht of the cell must be
     def longestStr(self):

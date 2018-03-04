@@ -80,7 +80,7 @@ class Extractor:
     
     def getDummyList(self):
         self.__classList = []
-        for index in range(1,6):
+        for index in range(0,6):
             data = Course(index, "", "Danes nimaš pouka.", "", "")
             self.__classList.append( data )
 
@@ -95,8 +95,14 @@ if __name__ == "__main__":
             print("\nThe list is empty.")
             print("The program didn't have any data to extract.")
             print("Looks like you don't have any classes this week.\n")
+
+            for course in extractor.getDummyList():
+                course.printValues()
+
         else:
-            extractor.getClassList()[0].printValues()
+            for classes in extractor.getClassList():
+                classes.printValues()
+                print("\n")
 
 
 

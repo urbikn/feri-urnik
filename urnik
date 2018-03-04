@@ -96,7 +96,7 @@ getDay () {
         fi
     else
         USE_SED=false
-        echo "\nDanes nimaš pouka retard. Uporabi [-n], da vidiš cel tedenski urnik ( ki se še vedno ni zgodil, so who cares )\n"
+        echo "\nDanes nimaš pouka. Uporabi [-n], da vidiš cel tedenski urnik ( ki se še vedno ni zgodil, so who cares )\n"
     fi
 }
 
@@ -125,5 +125,5 @@ else
 fi
 
 if $USE_SED; then
-	(sed -n "$begin_line,$end_line p" < data/urnik.txt && less -S) 2> /dev/null || printf "\nWon't work, did you forget to download data?\n> Use command urnik -d\n\n"
+	(sed -n "$begin_line,$end_line p" < data/urnik.txt) 2> /dev/null | less -S || printf "\nWon't work, did you forget to download data?\n> Use command urnik -d\n\n"
 fi
