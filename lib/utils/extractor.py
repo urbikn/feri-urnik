@@ -100,7 +100,9 @@ if __name__ == "__main__":
                 course.printValues()
 
         else:
-            extractor.getClassList()[0].printValues()
+            for classes in extractor.getClassList():
+                classes.printValues()
+                print("\n")
 
 
 

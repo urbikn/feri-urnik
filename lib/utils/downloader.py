@@ -21,6 +21,7 @@ from selenium.common.exceptions import *
 import time
 import os
 import sys, getopt
+from pathlib import Path
 
 class Download:
     browser = None
@@ -67,7 +68,11 @@ class Download:
     def stop(self):
         self.browser.quit()
 
-    def downloadUrnik(self):
+    def downloadUrnik(self, n=0):
+        if n == 3:
+            print( "Couldn't download file" )
+            return
+
         wait = WebDriverWait(self.browser, 4)
 
         # Waits for browser to load
@@ -96,6 +101,16 @@ class Download:
         elementType = wait.until(EC.element_to_be_clickable((By.ID, buttonDownloadId)))
         elementType.click()
         
+        # Checks if downloaded file exists
+        file = Path(self.filename)
+        if  not file.exists():
+            print("...")
+            time.sleep(1)
+            print( "\nDownloaded file doesn't exist\n-------------------------\nStarting new download\n" )
+            self.downloadUrnik(n)
+            return
+        # TODO: CHECK IF FILE EXISTS, IF NOT, RERUN PROGRAM
+
         print("\nDownloaded file.")
         time.sleep(2)
         os.rename(self.filename, self.renameFile)
