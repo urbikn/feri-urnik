@@ -14,12 +14,15 @@
 
 import sys, os, json, inspect, time
 
-path = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile( inspect.currentframe() ))[0],"..")))
+# Used when the main.py process imports this file and this files imports course, filters, ...
+path = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile( inspect.currentframe() ))[0],"")))
+path1 = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile( inspect.currentframe() ))[0],"..")))
 if path not in sys.path:
     sys.path.insert(0, path)
+    sys.path.insert(0, path1)
 
 from course import Course
-from filter import Filter
+from filters import Filter
 from drawer import Drawer
 
 # TODO: make anything left of multiple groups
@@ -46,7 +49,7 @@ class Formater:
             
         '''
 
-        filter = Filter(self.jsonData)
+        filters = Filter(self.jsonData)
         drawer = Drawer()
         day = []
         day_index = 0
@@ -55,7 +58,7 @@ class Formater:
         
 
         for entiry in self.classes:
-            if not personal or filter.checkGroup(entiry):
+            if not personal or filters.checkGroup(entiry):
                 
                 # Sees if the schedual changed to a new day
                 if(date < entiry.date):

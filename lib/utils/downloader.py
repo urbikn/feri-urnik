@@ -48,7 +48,7 @@ class Download:
 
 
     def setUp(self):
-        print("""\n\t--------------\nSpeed of loading tje site and downloading of data may differ\nbased on internet connection or how much their server is loaded.\n\t--------------""")
+        print("""\n\t--------------\nSpeed of loading the site and downloading of data may differ\nbased on internet connection and/or how much their server is loaded.\n\t--------------""")
         try:
             self.browser = webdriver.Firefox(firefox_profile=self.profile, firefox_options=self.options)
             self.browser.get(self.url)
@@ -92,12 +92,9 @@ class Download:
         print("Clicked {}.".format(self.course))
 
         print("\nStarting to download file")
-<<<<<<< HEAD
         # It just works, their dynamic website is shitty beyond belief
-=======
 
         # Sometimes it's the first, sometimes it's the second... 
->>>>>>> tester
         buttonDownloadId = self.browser.execute_script("""return $("span:contains('iCal-teden')").parent()[0].id""")
         if buttonDownloadId == "":
             buttonDownloadId = self.browser.execute_script("""return $("span:contains('iCal-teden')").parent()[1].id""")
@@ -106,8 +103,6 @@ class Download:
         elementType = wait.until(EC.element_to_be_clickable((By.ID, buttonDownloadId)))
         elementType.click()
         
-<<<<<<< HEAD
-=======
         # Checks if downloaded file exists
         file = Path(self.filename)
         if  not file.exists():
@@ -118,7 +113,6 @@ class Download:
             return
         # TODO: CHECK IF FILE EXISTS, IF NOT, RERUN PROGRAM
 
->>>>>>> tester
         print("\nDownloaded file.")
         time.sleep(2)
         os.rename(self.filename, self.renameFile)

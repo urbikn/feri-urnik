@@ -9,10 +9,43 @@
 import lib.utils.downloader as downloader
 import lib.utils.extractor as extractor
 import lib.utils.formater as formater
+import lib.utils.filters as filters
+import lib.utils.drawer as drawer
 import lib.course as course
-import os, sys, inspect, time
+
+import os, sys, inspect, time, getopt, json, datetime
+from pathlib import Path
+
+def checkDownloadTime():
+    '''
+    Checks if the calendar was downloaded this week. If not, saves new week in process_data.json and returns True.
+    '''
+
+    date = datetime.datetime.now()
+    week = datetime.date( date.year, date.month, date.day ).isocalendar()[1]
+    path = Path.cwd() / 'config' / 'process_data.json'
+
+    with open( path , 'r') as file:
+        data = json.load(file)
+    
+    if( data["week"] < week  ):
+        
+        data["week"] = week
+        with open( path, 'w') as file:
+            json.dump(data, file)
+
+        return True
+
+    return False
+
 
 if __name__ == "__main__":
+
+    # Check if it wasn't a force run ( so not manually wanting to download data )
+    if "force_download" not in sys.argv[1:]:
+        if( not checkDownloadTime() ):
+            sys.exit()
+
     print("\n\t---- Downloading ----" )
     downloadPath = os.path.abspath(os.path.join( os.getcwd(), "data"))
     download = downloader.Download("RIT UN", downloadPath)  
