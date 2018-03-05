@@ -93,7 +93,6 @@ if __name__ == "__main__":
         file.seek(0)
         file.truncate()
         for i in schedual:
-            for j in i:
-                file.write(j + "\n")
+            file.write(i + "\n")
     
     print("\n\t---- Finished ----" )

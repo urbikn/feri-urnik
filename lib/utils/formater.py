@@ -15,15 +15,13 @@
 import sys, os, json, inspect, time
 
 # Used when the main.py process imports this file and this files imports course, filters, ...
-path = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile( inspect.currentframe() ))[0],"")))
-path1 = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile( inspect.currentframe() ))[0],"..")))
+path = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile( inspect.currentframe() ))[0],"..")))
 if path not in sys.path:
     sys.path.insert(0, path)
-    sys.path.insert(0, path1)
 
 from course import Course
-from filters import Filter
-from drawer import Drawer
+from utils.filters import Filter
+from utils.drawer import Drawer
 
 # TODO: make anything left of multiple groups
 # TODO:  Pls fix spagetti code... PLS!!

@@ -41,6 +41,7 @@ class Download:
         self.profile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/octet-stream, text/calendar,application/vnd.sus-calendar,text/x-vcalendar")
         self.options.add_argument("--headless")  # Option to hide browser
         self.course = course
+        self.downloadPath = downloadPath
         self.filename = downloadPath + "/calendar.ics"
         self.renameFile = downloadPath + "/data.ics"
 
@@ -95,27 +96,34 @@ class Download:
         # It just works, their dynamic website is shitty beyond belief
 
         # Sometimes it's the first, sometimes it's the second... 
+        time.sleep(1)
         buttonDownloadId = self.browser.execute_script("""return $("span:contains('iCal-teden')").parent()[0].id""")
         if buttonDownloadId == "":
             buttonDownloadId = self.browser.execute_script("""return $("span:contains('iCal-teden')").parent()[1].id""")
 
-        time.sleep(1)
         elementType = wait.until(EC.element_to_be_clickable((By.ID, buttonDownloadId)))
         elementType.click()
         
-        # Checks if downloaded file exists
-        file = Path(self.filename)
-        if  not file.exists():
-            print("...")
-            time.sleep(1)
-            print( "\nDownloaded file doesn't exist\n-------------------------\nStarting new download\n" )
-            self.downloadUrnik(n)
-            return
-        # TODO: CHECK IF FILE EXISTS, IF NOT, RERUN PROGRAM
+        for i in range(1,10):
+            if( not any("calendar" in file for file in os.listdir(self.downloadPath)) ):
+                time.sleep(0.4)
+                sys.stdout.write("\rDownloading {}".format("."*i))
+                sys.stdout.flush()
+            else:
+                print("\nDownloaded file.")
+                break
 
-        print("\nDownloaded file.")
-        time.sleep(2)
+        # Checks if downloaded file exists
+        if( not any("calendar" in file for file in os.listdir(self.downloadPath)) ):
+                print(os.listdir(self.downloadPath))
+                print( "\n...\nDownloaded file doesn't exist\nStarting new download\n-------------------------\n" )
+                time.sleep(1)
+                n += 1
+                self.downloadUrnik(n)
+                return
+
         os.rename(self.filename, self.renameFile)
+
 
 if __name__ == "__main__":
     mainPath = os.path.abspath(os.path.join( os.getcwd(), "../../data"))
