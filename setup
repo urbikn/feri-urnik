@@ -68,8 +68,8 @@ mkdir data 2> /dev/null
 # -----------------------
 # Creating cron
 # -----------------------
-printf "${GREEN}\nWritting a line in cron\n${NC}"
-(crontab -l 2>/dev/null; echo "00 * * * * $homePath/urnik/main.py") | crontab -
+#printf "${GREEN}\nWritting a line in cron\n${NC}"
+#(crontab -l 2>/dev/null; echo "00 * * * * $homePath/urnik/main.py") | crontab -
 
 
 
