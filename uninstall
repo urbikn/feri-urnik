@@ -13,12 +13,12 @@ NC='\033[0m' # No color
 currentPath=$(pwd)
 
 # -----------------------
-# Remove script urnik from /usr/bin
+# Remove script urnik from /usr/local/bin
 # -----------------------
 
-printf "${RED}Removing command urnik from /usr/bin. Require sudo access:\n\n${NC}"
+printf "${RED}Removing command urnik from /usr/local/bin/. Require sudo access:\n\n${NC}"
 
-sudo rm /usr/bin/urnik
+sudo rm /usr/local/bin/urnik
 
 printf "${RED}\nRemoving ${currentPath}\n\n"
 

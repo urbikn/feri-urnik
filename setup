@@ -60,10 +60,18 @@ rm -rf .git* setup
 sed -i '/#.\[PUT.*/c\cd '"$(pwd)" urnik
 
 
-printf "${GREEN}\nMoving script 'urnik' to /usr/bin.\n${NC}"
-sudo mv urnik /usr/bin
+printf "${GREEN}\nMoving script 'urnik' to /usr/local/bin/.\n${NC}"
+sudo mv urnik /usr/local/bin/
 
 mkdir data 2> /dev/null
+
+# -----------------------
+# Creating cron
+# -----------------------
+printf "${GREEN}\nWritting a line in cron\n${NC}"
+(crontab -l 2>/dev/null; echo "00 * * * * $homePath/urnik/main.py") | crontab -
+
+
 
 # -----------------------
 # Download schedule
