@@ -62,7 +62,7 @@ class Download:
             except urllib.error.URLError:
                 print("Fix your shitty network connection!")
             else:
-                print("Yup, they changed the URL!")
+                raise WebDriverException() 
 
             sys.exit()
  

@@ -32,14 +32,14 @@ done
 
 help () {
     usage="$(basename 'urnik') [-a] [-n] [-h] -- Program to get my schedule for school (urnik pač):
-    \n\t-a, --all-courses\tShows entire schedule for program RIT
-    \n\t-n, --no-day\t\tDisables the function of showing todays schedule
-    \n\t-d, --download\t\tDownloads the weeks schedule
-    \n\n\nExamples:
-    \n\turnik -a\tGets the days schedule for the program, not just mine
-    \n\turnik -an\tGets the entire schedule for the program, not just mine
-    \n\nCopyright (C) Urban Knupleš
-    \nDistributed under terms of the MIT license."
+             \n\t-a, --all-courses\tShows entire schedule for program RIT
+             \n\t-n, --no-day\t\tDisables the function of showing todays schedule
+             \n\t-d, --download\t\tDownloads the weeks schedule
+             \n\n\nExamples:
+             \n\turnik -a\tGets the days schedule for the program, not just mine
+             \n\turnik -an\tGets the entire schedule for the program, not just mine
+             \n\nCopyright (C) Urban Knupleš
+             \nDistributed under terms of the MIT license."
 
     echo $usage
     USE_SED=false
@@ -52,8 +52,8 @@ getDay () {
     if [ "$day" = "pon" ]
     then
         if $1; then
-            begin_line=3;
-            end_line=11;
+            begin_line=4;
+            end_line=12;
         else
             begin_line=64;
             end_line=72;
@@ -61,8 +61,8 @@ getDay () {
     elif [ "$day" = "tor" ]
     then
         if $1; then
-            begin_line=14;
-            end_line=22;
+            begin_line=15;
+            end_line=23;
         else
             begin_line=75;
             end_line=83;
@@ -70,8 +70,8 @@ getDay () {
     elif [ "$day" = "sre" ]
     then
         if $1; then
-            begin_line=25;
-            end_line=33;
+            begin_line=26;
+            end_line=34;
         else
             begin_line=86;
             end_line=94;
@@ -79,8 +79,8 @@ getDay () {
     elif [ "$day" = "če" ]
     then
         if $1; then
-            begin_line=36;
-            end_line=44;
+            begin_line=37;
+            end_line=45;
         else
             begin_line=97;
             end_line=105;
@@ -88,8 +88,8 @@ getDay () {
     elif [ "$day" = "pet" ]
     then
         if $1; then
-            begin_line=47;
-            end_line=55;
+            begin_line=48;
+            end_line=56;
         else
             begin_line=108;
             end_line=116;
@@ -100,18 +100,20 @@ getDay () {
     fi
 }
 
-# DON'T REMOVE COMMENT!
-# [PUT PATH HERE]
+# DON'T REMOVE COMMENT! Code is meant to be used so the program knows where to find the default folder where data is stored.
+
+
 
 if $HELP; then
     help
 elif $DOWNLOAD; then
-    python3 main.py
+    python3 main.py "force_download"
+    command -v notify-send > /dev/null && notify-send "Finished downloading schedule."
     USE_SED=false
 elif $ALL_COURSES; then
     if $NO_DAY; then
-        begin_line=1;
-        end_line=55;
+        begin_line=3;
+        end_line=57;
     else
         getDay true
     fi

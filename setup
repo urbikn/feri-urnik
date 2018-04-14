@@ -16,15 +16,13 @@ downloadPath=$(pwd)
 # Checks if script exists in /usr/bin
 # -----------------------
 
-#script=$(sudo find /usr/bin -name "urnik" | grep .)
+scriptLocation=$(command -v urnik)
 
-
-#echo $script
-#if [ "$script" ]; then
-    #printf "${RED}Found command urnik in system\n"
-    #printf "removing command urnik from /usr/bin${NC}\n"
-    #sudo rm /usr/bin/urnik
-#fi
+if [ "$scriptLocation" ]; then
+    printf "${RED}Found command urnik in system\n"
+    printf "removing command urnik from %s ${NC}\n" "$scriptLocation$"
+    sudo rm "$scriptLocation"
+fi
 
 # -----------------------
 # Check if selenium installed
@@ -57,7 +55,7 @@ cd "$homePath/urnik"
 rm -rf .git* setup
 
 # Changes command inside urnik shell (command is cd ..path..)
-sed -i '/#.\[PUT.*/c\cd '"$(pwd)" urnik
+sed -i '104i cd '"$homePath"'/urnik' urnik 
 
 
 printf "${GREEN}\nMoving script 'urnik' to /usr/local/bin/.\n${NC}"
@@ -86,4 +84,10 @@ if [ "$download" = "y" ]; then
 else
     printf "${RED}REMEMBER: ${NC}Before calling command/script, download schedule with command ${GREEN}urnik -d${NC}"
 fi
-printf "\n\n"
+printf "\n"
+printf "${RED}Please remember to add your laboratory groups in the config/userData.json file, otherwise you won't have your groups shown";
+printf "\n"
+
+
+command -v notfy-send > /dev/null && notfy-send "Finished setting up urnik."
+
