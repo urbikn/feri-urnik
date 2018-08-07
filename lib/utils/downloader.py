@@ -28,6 +28,8 @@ from pathlib import Path
 class Download:
     browser = None
     url = None
+    program = None
+    year = None
     course = None
     filename = None
     renameFile = None
@@ -37,7 +39,7 @@ class Download:
 
 
 
-    def __init__(self, url, course, downloadPath):
+    def __init__(self, url, downloadPath, program,year=None, course=None):
         self.profile.set_preference("browser.download.folderList", 2)
         self.profile.set_preference("browser.download.manager.showWhenStarting", False)
         self.profile.set_preference("browser.download.dir", downloadPath)
@@ -47,6 +49,8 @@ class Download:
         self.browser = webdriver.Firefox(firefox_profile=self.profile,
                                          firefox_options=self.options)
         self.url = url
+        self.program = program
+        self.year = year
         self.course = course
         self.downloadPath = downloadPath
         self.filename = downloadPath + "/calendar.ics"
@@ -62,12 +66,11 @@ class Download:
         """
 
         print("""
-                    --------------
+                     --------------
         Speed of loading the site and of downloading
         the data may differ based on internet
         connection and/or how much their server is loaded.
-                     --------------
-        """)
+                     --------------""")
 
         # Tries to connect to website
         try:
@@ -75,7 +78,9 @@ class Download:
 
         except WebDriverException:
             import urllib
-            print("""\nError: Cannot connect to website.\nIt's maybe your internet or maybe they changed the URL.\nChecking!""")
+            print("""\nError: Cannot connect to website.
+                      It's maybe your internet or maybe they changed the URL.
+                      Checking!""")
             try:
                 urllib.request.urlopen("http://google.com") # Google can't go down right
             except urllib.error.URLError:
@@ -92,34 +97,46 @@ class Download:
         """
         self.browser.quit()
 
+
+    def __clickDropdown(self, program=None, year=None, course=None):
+        """
+            Finds the dropdown menu of program/year/course and clicks it to generate
+            the programs/year/course list of options.
+            After that it just clicks the option specified
+            
+            Default is 'program'.
+        """
     
-    def __clickCourse(self):
-        """
-            Finds the course dropdown menu and click to generate the courses 
-            and clicks one of the courses to generate the table.
-        """
         wait = WebDriverWait(self.browser, 4)
         
-        # Finds course dropdown menu
-        print("Starting click dropdown of courses.")
+        if year:
+            values = {'name':'year','data': self.year,'dropdown_num': 1}
+            
+        elif course:
+            values = {'name':'course','data': self.course, 'dropdown_num': 2}
+            
+        else:
+            values = {'name':'program','data': self.program,'dropdown_num':0}
+        
+        print("Starting to find dropdown of {}.".format(values['name']))
         
         # Not using jquery to execute the click instead use Selenium, so it can fully load
-        script ="return $('.noBorderBasicTable:eq(1) label:first').get()[0].id.match(/\d+/)[0]"
-        numberID = self.browser.execute_script(script)
-        element = wait.until(EC.presence_of_element_located((By.ID, "form:j_idt"+ numberID +"_label")))
+        script ="return $('.noBorderBasicTable:eq(1) label:eq({})').get()[0].id.match(/\d+/)[0]".format(values['dropdown_num'])
+                
+        tagID = "form:j_idt" + self.browser.execute_script(script)
+        element = wait.until(EC.presence_of_element_located((By.ID, tagID + "_label")))
         element.click()
 
         time.sleep(1)
         
-        # Finds the course 
-        print("Starting click for",self.course)
-        script = """return $(document.getElementById('form:j_idt86_items'))
-                    .find("li[data-label='"""+ self.course + """']")[0].id
-                """
-        courseID = self.browser.execute_script(script)
-        elementType = wait.until(EC.presence_of_element_located((By.ID, courseID )))
+        # Finds the specific option
+        print("Starting click for",values['name'] + ':', values['data'])
+        script = """return $(document.getElementById('{0}')).find("li[data-label='{1}']")[0].id
+                 """.format(tagID+'_items',values['data'])
+        ID = self.browser.execute_script(script)
+        elementType = wait.until(EC.presence_of_element_located((By.ID, ID )))
         elementType.click()
-
+        
 
     def __downloadFile(self):
         wait = WebDriverWait(self.browser, 4)
@@ -159,7 +176,12 @@ class Download:
         # Waits for browser to load website
         wait.until(EC.presence_of_element_located((By.ID, "content")))
 
-        self.__clickCourse()
+        self.__clickDropdown(program=True)
+        if year: # if year is specified
+            self.__clickDropdown(year=True)
+        if course: # if course is specified
+            self.__clickDropdown(course=True)
+            
         self.__downloadFile()
         
         # Checks if downloaded file exists
@@ -181,9 +203,10 @@ class Download:
 if __name__ == "__main__":
     mainPath = os.path.abspath(os.path.join( os.getcwd(), "../../data")) + '/'
     download = Download(url = "http://wise-tt.com/wtt_um_feri/",
-                        course = "RAČUNALNIŠTVO IN INFORMACIJSKE TEHNOLOGIJE UN (BU20)",
+                        program = "RAČUNALNIŠTVO IN INFORMACIJSKE TEHNOLOGIJE UN (BU20)",
                         downloadPath = mainPath)
 
     download.setUp()
     download.downloadUrnik()
     download.stop()
+
