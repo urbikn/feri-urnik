@@ -7,7 +7,10 @@
 # Distributed under terms of the MIT license.
 
 """
-    Extracts the data from the downloaded file
+    Class meant to extrat lines from downloaded file and transform data into
+    a Course object.
+    
+    In a nutshell: returns list of every occuring class in week
 """
 
 import sys, os, json, inspect
@@ -18,67 +21,63 @@ if path not in sys.path:
 
 from course import Course
 
-# returns list of every occuring class in week
 class Extractor:
     __classList = None
-    __unwantedLines = None
+    __ignoreLine = None # ignores lines in file with specific list of values
 
-    def __init__(self, unwanted):
-        self.__unwantedLines = unwanted
+    def __init__(self, ignore={}):
+        self.__ignoreLine = ignore 
         self.__classList = []
 
-    # Removes entries in list based on what the unwanted lines
-    # the user suggested
-    def __rmEntries(self, list):
+
+    def __removeEntries(self, list):
+        """
+            Removes entries in list based on what the ignore lines the user suggested
+            
+            return: list(type=string)
+        """
+        
         for index, data in enumerate(list):
-            for unwanted in self.__unwantedLines:
-                if unwanted in data:
+            for ignore in self.__ignoreLine:
+                if ignore in data:
                     del list[index]
 
-        list = self.__rmUnwantedChar(list)
+        list = self.__removeChars(list)
 
         # Location doesn't want to be found, so I bruteforce removed it
-        for i in self.__unwantedLines:
+        for i in self.__ignoreLine:
             if "LOC" in i:
                 return list[1:]
         
         return list
 
-    # Removes left of ":" and whitespaces between entire text
-    def __rmUnwantedChar(self, list):
-        tmpList = []
+    def __removeChars(self, list):
+        """
+            Removes keys, ':' and strips values of whitespaces. Format example of text:
+            Key:value <- removes key 
+            
+            return: list(type=string)
+        """
+        newList = []
         
         for entiry in list:
             entiry = entiry.split(":")[1].strip()
-            tmpList.append(entiry)
+            newList.append(entiry)
 
-        return tmpList
+        return newList
+    
     
     def getClassList(self):
         return self.__classList
     
-
-    def extractFromFile(self, file):
-        for index, line in enumerate(file):
-            # initialize variables and list 
-            if "BEGIN:VEVENT" in line:
-                course = []
-
-            elif "END:VEVENT" in line:
-                # Removes the lines that shouldn't be in list
-                tmp = self.__rmEntries(course)
-                data = Course()
-                data.setValues(tmp)
-                self.__classList.append( data )
-
-            else:
-                try:
-                    # Fuck newlines
-                    course.append(line.strip("\n"))
-                except:
-                    pass
     
     def getDummyList(self):
+        """
+            Returns a list containing 6 lines just saying that you don't have
+            class.
+            
+            return: list(type=Course)
+        """
         self.__classList = []
         for index in range(0,6):
             data = Course(index, "", "Danes nimaš pouka.", "", "")
@@ -86,9 +85,38 @@ class Extractor:
 
         return self.getClassList()
 
+
+    def extractFromFile(self, file):
+        """
+            Reads lines from file and based on the value of line it recreates a new
+            list or a new Course object or appends lines to the list.
+                
+            return: None
+        """
+        for index, line in enumerate(file):
+            # initialize variables and list 
+            if "BEGIN:VEVENT" in line:
+                lines = []
+
+            # Creates a Course object
+            elif "END:VEVENT" in line:
+                # Removes the lines that shouldn't be in list
+                data = self.__removeEntries(lines)
+                course = Course()
+                course.setValues(data)
+                self.__classList.append( course )
+            
+            else:
+                try:
+                    # Fuck newlines
+                    lines.append(line.strip("\n"))
+                except:
+                    pass
+    
+    
 if __name__ == "__main__":
     with open("../../data/data.ics") as file:
-        extractor = Extractor({"UID","DTSTAMP","LOCATION"})
+        extractor = Extractor(ignore = {"UID","DTSTAMP","LOCATION"})
         extractor.extractFromFile(file)
 
         if( len(extractor.getClassList()) == 0):

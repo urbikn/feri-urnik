@@ -45,7 +45,7 @@ class Download:
         self.profile.set_preference("browser.download.dir", downloadPath)
         self.profile.set_preference("browser.helperApps.neverAsk.saveToDisk",
                                     "application/octet-stream, text/calendar,application/vnd.sus-calendar,text/x-vcalendar")
- #       self.options.add_argument("--headless")  # Option to hide browser (Comment out to see browser)
+        # self.options.add_argument("--headless")  # Option to hide browser (Comment out to see browser)
         self.browser = webdriver.Firefox(firefox_profile=self.profile,
                                          firefox_options=self.options)
         self.url = url
@@ -109,6 +109,7 @@ class Download:
     
         wait = WebDriverWait(self.browser, 4)
         
+        # Figures out which dropdown menu you mean to access
         if year:
             values = {'name':'year','data': self.year,'dropdown_num': 1}
             
@@ -129,10 +130,10 @@ class Download:
 
         time.sleep(1)
         
-        # Finds the specific option
+        # Finds the specific option based on 'data' in values
         print("Starting click for",values['name'] + ':', values['data'])
         script = """return $(document.getElementById('{0}')).find("li[data-label='{1}']")[0].id
-                 """.format(tagID+'_items',values['data'])
+                """.format(tagID+'_items',values['data'])
         ID = self.browser.execute_script(script)
         elementType = wait.until(EC.presence_of_element_located((By.ID, ID )))
         elementType.click()
@@ -204,6 +205,8 @@ if __name__ == "__main__":
     mainPath = os.path.abspath(os.path.join( os.getcwd(), "../../data")) + '/'
     download = Download(url = "http://wise-tt.com/wtt_um_feri/",
                         program = "RAČUNALNIŠTVO IN INFORMACIJSKE TEHNOLOGIJE UN (BU20)",
+                        year = 1,
+                        course = "RAČUNALNIŠTVO IN INFORMACIJSKE TEHNOLOGIJE (BU20)"
                         downloadPath = mainPath)
 
     download.setUp()
