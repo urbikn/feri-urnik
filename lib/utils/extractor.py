@@ -14,8 +14,19 @@
 """
 
 import sys, os, json, inspect
+import pathlib
+import datetime
 
-path = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile( inspect.currentframe() ))[0],"..")))
+path = os.path.realpath(
+    os.path.abspath(
+        os.path.join(
+            os.path.split(
+                inspect.getfile(
+                    inspect.currentframe()
+                )
+            )[0],"..")
+        )
+    )
 if path not in sys.path:
     sys.path.insert(0, path)
 
@@ -73,14 +84,29 @@ class Extractor:
     
     def getDummyList(self):
         """
-            Returns a list containing 6 lines just saying that you don't have
-            class.
+            Returns a Class list containg 7 objects for every day of the week
+            and telling there isn't class every day
             
             return: list(type=Course)
         """
         self.__classList = []
-        for index in range(0,6):
-            data = Course(index, "", "Danes nimaš pouka.", "", "")
+       
+        # Gets the datetime of Monday for that week and Monday for the next week,
+        # so it can iterate through every day
+        today = datetime.datetime.now().replace(hour=0,
+                                                minute=0,
+                                                second=0,
+                                                microsecond=0)
+        if today.weekday() != 0: # Checks wheather it's monday
+            today -= datetime.timedelta(days=today.weekday())
+        # Starts with monday
+        start = today
+        # Ends with next monday
+        end = start + datetime.timedelta(days=-today.weekday(),weeks=1)
+        
+        while start < end:
+            data = Course(start, "", "Danes nimaš pouka.", "", "")
+            start += datetime.timedelta(days=1)
             self.__classList.append( data )
 
         return self.getClassList()
@@ -88,8 +114,8 @@ class Extractor:
 
     def extractFromFile(self, file):
         """
-            Reads lines from file and based on the value of line it recreates a new
-            list or a new Course object or appends lines to the list.
+            Reads lines from file and based on the value of line it recreates a
+            new list or a new Course object or appends lines to the list.
                 
             return: None
         """
@@ -115,7 +141,14 @@ class Extractor:
     
     
 if __name__ == "__main__":
-    with open("../../data/data.ics") as file:
+    
+    filename = 'example.ics'
+    path = pathlib.Path('../..') / 'data' / filename
+    if not path.is_file():
+        print('File',filename,'doesn\'t exist')
+        sys.exit()
+    
+    with path.open() as file:
         extractor = Extractor(ignore = {"UID","DTSTAMP","LOCATION"})
         extractor.extractFromFile(file)
 
