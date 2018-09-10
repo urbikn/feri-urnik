@@ -29,13 +29,19 @@ class Course:
     # Extracts data from list and saves it into object variables
     def setValues(self, course):
         self.classDuraction(course[0], course[1])
-        self.setDate(str(course[0]))
+        if str == type(class[0]):
+            self.setDateStr(str(course[0]))
+        elif datetime.datetime == type(class[0]):
+            self.setDate(course[0])
+        else:
+            print('Couldn\'t write date value (class[0])')
+            
         self.courseName = course[2].split(",")[0]
         self.place = " ".join(course[2].split(",")[1:]).lstrip() # slices up words between ",", selects 1-> and joins them together
         self.group = course[3]
 
-    # A little better formated date
-    def setDate(self, date):
+    # A little better formated date via string
+    def setDateStr(self, date):
         year = date[0:4]
         month = date[4:6]
         day = date[6:8]
