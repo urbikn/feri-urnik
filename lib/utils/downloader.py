@@ -84,9 +84,9 @@ class Download:
             try:
                 urllib.request.urlopen("http://google.com") # Google can't go down right
             except urllib.error.URLError:
-                print("Tried to connect to google.com. It's your internet.")
+                raise ConnectionError("Tried to connect to google.com. It's your internet.")
             else:
-                print("Looks like they changed the URL.")
+                raise ConnectionRefusedError("Looks like they changed the URL.")
 
             sys.exit()
  
