@@ -10,14 +10,36 @@ from datetime import datetime
 
 class Course:
     def __init__(self, date = None, time = None, courseName = None, place = None, group = None):
-        self.date = date
+        self.__writeDate(date)
         self.time = time
         self.courseName = courseName
         self.place = place
         self.group = group
-
-    # What time class starts and ends
+    
+    def __writeDate(self, date):
+        '''
+            Date can be written inserted different types.
+            Just a quickly written function to work...
+            
+            return: None
+        '''
+        
+        if date == None:
+            pass
+        elif str == type(date):
+            self.setDateStr(str(date))
+        elif datetime == type(date):
+            self.setDate(date)
+        else:
+            print('Couldn\'t write date value (class[0])')
+    
+    
     def classDuraction(self, start, end):
+        '''
+            Creates variable self.time to know duraction of class.
+            
+            return: None
+        '''
         hour = []
         for data in [start,end]:
             data= data.split("T")[1][:4]
@@ -26,22 +48,26 @@ class Course:
         
         self.time = "{} - {}".format(hour[0], hour[1])
 
-    # Extracts data from list and saves it into object variables
     def setValues(self, course):
-        self.classDuraction(course[0], course[1])
-        if str == type(class[0]):
-            self.setDateStr(str(course[0]))
-        elif datetime.datetime == type(class[0]):
-            self.setDate(course[0])
-        else:
-            print('Couldn\'t write date value (class[0])')
+        '''
+            Extracts data from list and saves it into object variables.
             
+            return: None
+        '''
+        self.classDuraction(course[0], course[1])
+        self.__writeDate(course[0])
         self.courseName = course[2].split(",")[0]
         self.place = " ".join(course[2].split(",")[1:]).lstrip() # slices up words between ",", selects 1-> and joins them together
         self.group = course[3]
 
-    # A little better formated date via string
     def setDateStr(self, date):
+        '''
+            Gets date as a string and formats it to be used as datetime.datetime
+            object.
+            
+            return: None
+        '''
+        
         year = date[0:4]
         month = date[4:6]
         day = date[6:8]
@@ -49,8 +75,13 @@ class Course:
         string = "{}.{}.{}".format(day,month,year)
         self.date = datetime.strptime(string, "%d.%m.%Y")
     
-    # Finds the longest string so we know what the widht of the cell must be
     def longestStr(self):
+        '''
+            Finds the longest string from all the variables in Course.
+        
+            return: int
+        '''
+        
         num = 0
         for i in self.__dict__:
             tmp_num = len(str(self.__dict__[i]))
