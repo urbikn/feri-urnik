@@ -45,7 +45,7 @@ class Download:
         self.profile.set_preference("browser.download.dir", downloadPath)
         self.profile.set_preference("browser.helperApps.neverAsk.saveToDisk",
                                     "application/octet-stream, text/calendar,application/vnd.sus-calendar,text/x-vcalendar")
-        # self.options.add_argument("--headless")  # Option to hide browser (Comment out to see browser)
+        self.options.add_argument("--headless")  # Option to hide browser (Comment line to see browser)
         self.browser = webdriver.Firefox(firefox_profile=self.profile,
                                          firefox_options=self.options)
         self.url = url
@@ -76,14 +76,15 @@ class Download:
         try:
             self.browser.get(self.url)
 
-        except WebDriverException:
-            import urllib
+        except WebDriverExcepton:
+            from urllib import error,request
+            
             print("""\nError: Cannot connect to website.
                       It's maybe your internet or maybe they changed the URL.
                       Checking!""")
             try:
-                urllib.request.urlopen("http://google.com") # Google can't go down right
-            except urllib.error.URLError:
+                request.urlopen("http://google.com") # Google can't go down right
+            except error.URLError:
                 raise ConnectionError("Tried to connect to google.com. It's your internet.")
             else:
                 raise ConnectionRefusedError("Looks like they changed the URL.")

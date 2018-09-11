@@ -86,13 +86,13 @@ class Formater:
 
     def createSchedual(self):
         self.__makeTable()        
-        self.daysSchedual.append("\n\n\n")
+        self.daysSchedual.append("\n!!!!\n")
         self.__makeTable(True)        
 
     
     def createDummySchedual(self):
         self.__makeTable()        
-        self.daysSchedual.append("\n\n\n")
+        self.daysSchedual.append("\n!!!!\n")
         self.__makeTable()        
 
     def getSchedual(self):

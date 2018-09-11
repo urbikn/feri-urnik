@@ -6,23 +6,31 @@
 # Distributed under terms of the MIT license.
 #
 
+# Make temporary file
+# link: https://unix.stackexchange.com/a/181938
+tmpfile=$(mktemp /tmp/urnik.XXXXXX)
+FILENAME='data/urnik.txt'
             
-OPTS=$(getopt -o anhd --long all-courses,no-day,download,help: -n 'parse-options' -- "$@")
+OPTS=$(getopt -o gwhd --long general,entire-week,download,help: -n 'parse-options' -- "$@")
 
-if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
+if [ $? != 0 ] ; then echo -e "Failed parsing options." >&2 ; exit 1 ; fi
 
 eval set -- "$OPTS"
 
-ALL_COURSES=false
-NO_DAY=false
+GENERAL=false
+ENTIRE_WEEK=false
 HELP=false
 DOWNLOAD=false
 USE_SED=true
+day=''
+data=''
+
+
 
 while true; do
   case "$1" in
-    -a | --all-courses ) ALL_COURSES=true; shift ;;
-    -n | --no-day )    NO_DAY=true; shift ;;
+    -g | --general ) GENERAL=true; shift ;;
+    -w | --entire-week )    ENTIRE_WEEK=true; shift ;;
     -d | --download ) DOWNLOAD=true; shift ;;
     -h | --help ) HELP=true; shift ;;
     -- ) shift; break ;;
@@ -31,72 +39,40 @@ while true; do
 done
 
 help () {
-    usage="$(basename 'urnik') [-a] [-n] [-h] -- Program to get my schedule for school (urnik pač):
-             \n\t-a, --all-courses\tShows entire schedule for program RIT
-             \n\t-n, --no-day\t\tDisables the function of showing todays schedule
+    usage="$(basename 'urnik') [-g] [-w] [-h] [-d] -- Program to get my schedule for school (urnik pač):
+             \n\t-g, --general\t\tShows general schedule for program RIT
+             \n\t-w, --entire-week\tDisables the function of showing todays schedule
              \n\t-d, --download\t\tDownloads the weeks schedule
              \n\n\nExamples:
-             \n\turnik -a\tGets the days schedule for the program, not just mine
-             \n\turnik -an\tGets the entire schedule for the program, not just mine
+             \n\turnik\t\tGets you custom schedual for that day
+             \n\turnik -g\tGets the general schedual for that day
+             \n\turnik -gw\tGets the general schedual for the entire week
              \n\nCopyright (C) Urban Knupleš
              \nDistributed under terms of the MIT license."
 
-    echo $usage
+    echo -e $usage
     USE_SED=false
 }
 
+
+
+
 getDay () {
+    # Returns day in slovene
 
-    day=$(date | cut -c 1-3)
-
-    if [ "$day" = "pon" ]
-    then
-        if $1; then
-            begin_line=4;
-            end_line=12;
-        else
-            begin_line=64;
-            end_line=72;
-        fi
-    elif [ "$day" = "tor" ]
-    then
-        if $1; then
-            begin_line=15;
-            end_line=23;
-        else
-            begin_line=75;
-            end_line=83;
-        fi
-    elif [ "$day" = "sre" ]
-    then
-        if $1; then
-            begin_line=26;
-            end_line=34;
-        else
-            begin_line=86;
-            end_line=94;
-        fi
-    elif [ "$day" = "če" ]
-    then
-        if $1; then
-            begin_line=37;
-            end_line=45;
-        else
-            begin_line=97;
-            end_line=105;
-        fi
-    elif [ "$day" = "pet" ]
-    then
-        if $1; then
-            begin_line=48;
-            end_line=56;
-        else
-            begin_line=108;
-            end_line=116;
-        fi
+    day=$(date | cut -c 1-3| awk '{print tolower($0)}')
+    if [ "$day" = "mon" ]; then
+        day='PON'
+    elif [ "$day" = "tue" ]; then
+        day='TOR'
+    elif [ "$day" = "wen" ]; then
+        day='SRE'
+    elif [ "$day" = "thu" ]; then
+        day='ČET'
+    elif [ "$day" = "fri" ]; then
+        day='PET'
     else
-        USE_SED=false
-        echo "\nDanes nimaš pouka. Uporabi [-n], da vidiš cel tedenski urnik ( ki se še vedno ni zgodil, so who cares )\n"
+        day='None'
     fi
 }
 
@@ -108,24 +84,35 @@ if $HELP; then
     help
 elif $DOWNLOAD; then
     python3 main.py "force_download"
-    command -v notify-send > /dev/null && notify-send "Finished downloading schedule."
+    command -v notify-send > /dev/null && notify-send -t 0 "Finished downloading schedule."
     USE_SED=false
-elif $ALL_COURSES; then
-    if $NO_DAY; then
-        begin_line=3;
-        end_line=57;
-    else
-        getDay true
+else # Display course
+
+    # Gets section of schedual based on wheather it is custom or entire
+    if $GENERAL; then # General schedual
+        cat $FILENAME | sed -e '1,/!.*!/d'| tail -n +5 > "$tmpfile"
+        
+    else # Custom user schedual
+        cat $FILENAME | sed -ne '/!.*!/,$p'| tail -n +6 > "$tmpfile"
     fi
-else
-    if $NO_DAY; then
-        begin_line=64;
-        end_line=116;
-    else
-        getDay false
+    
+    
+    if ! $ENTIRE_WEEK; then
+        getDay
+        echo "$(cat "$tmpfile" | sed -ne '/\:.'$day'/,$p'| head -n 9)" > "$tmpfile"
     fi
+    
+    
+    if [ -s '$tmpfile' ]; then
+        USE_SED=false
+        echo -e "\nDanes nimaš pouka. Uporabi [-w], da vidiš cel tedenski urnik.\n"
+
+    fi
+    
 fi
 
 if $USE_SED; then
-	(sed -n "$begin_line,$end_line p" < data/urnik.txt) 2> /dev/null | less -S || printf "\nWon't work, did you forget to download data?\n> Use command urnik -d\n\n"
+	cat "$tmpfile" | less -S || echo -e "\nWon't work, did you forget to download data?\n> Use command urnik -d\n\n"
 fi
+
+rm "$tmpfile"

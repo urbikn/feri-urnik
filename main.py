@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
     print("\n\t---- Downloading ----" )
     downloadPath = os.path.abspath(os.path.join( os.getcwd(), "data"))
-    download = downloader.Download(url=url,downloadPath=downloadPath,program='RAČUNALNIŠTVO IN INFORMACIJSKE TEHNOLOGIJE (BU20)')  
+    download = downloader.Download(url=url,downloadPath=downloadPath,program='RAČUNALNIŠTVO IN INFORMACIJSKE TEHNOLOGIJE (BU20)', year=2)  
     download.setUp()
     download.downloadUrnik()
     download.stop()

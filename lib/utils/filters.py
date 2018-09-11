@@ -34,6 +34,7 @@ class Filter:
         return: True/False
         '''
         
+        typeGroup=None
         className = course.courseName
         classGroup = course.group
         
