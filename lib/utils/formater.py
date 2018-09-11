@@ -13,20 +13,25 @@
 """
 
 import sys, os, json, inspect, time
+import pathlib
 
 # Used when the main.py process imports this file and this files imports course, filters, ...
-path = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile( inspect.currentframe() ))[0],"..")))
+path = os.path.realpath(
+    os.path.abspath(
+        os.path.join(
+            os.path.split(
+                inspect.getfile(
+                    inspect.currentframe()
+                )
+            )[0],"..")
+        )
+    )
 if path not in sys.path:
     sys.path.insert(0, path)
 
 from course import Course
 from utils.filters import Filter
 from utils.drawer import Drawer
-
-# TODO: make anything left of multiple groups
-# TODO:  Pls fix spagetti code... PLS!!
-# TODO: MAKE COLORS!
-
 
 class Formater:
     daysSchedual = []  #each entiry represents a new days schedual
@@ -43,14 +48,18 @@ class Formater:
         Creates a table of the schedual and returns that in a string.
 
         Description:
-        Arranges 'classes' in 'day' list, each entiry is an list of classes that happen on that day.
+        Arranges 'classes' and 'num_day' in 'day' list, each entiry is an list
+        of classes that happen on that day. The 'num_day' is used to tell the 
+        Drawer what day it is.
+        
+        return: None
             
         '''
-
+        
+        # Json file has Course and group number
         filters = Filter(self.jsonData)
         drawer = Drawer()
         day = []
-        day_index = 0
         date = self.classes[0].date # The date of the first element in list so it can start comparing with others
         class_list = []
         
@@ -60,16 +69,16 @@ class Formater:
                 
                 # Sees if the schedual changed to a new day
                 if(date < entiry.date):
-                    day.append( class_list ) 
+                    day.append( {'num_day':date.weekday(),'classes':class_list} ) 
                     class_list = []
                     date = entiry.date # Adds new date for different day
                 
                 class_list.append( entiry );
         
-        day.append( class_list ) 
+        day.append( {'num_day':date.weekday(),'classes':class_list} ) 
         string = ""
-        for index, value in enumerate(day):
-            string += drawer.drawTable(value, index)
+        for value in day:
+            string += drawer.drawTable(classes=value['classes'], num_day=value['num_day'])
 
         self.daysSchedual.append(string)
 
@@ -91,18 +100,27 @@ class Formater:
 
 
 
-
 if __name__ == "__main__":
     from extractor import Extractor
 
-    mainPath = os.path.abspath(os.path.join( os.getcwd() , "../../"))
-
-    jsonPath = os.path.join(mainPath, "config", "userData.json")
-    files = open(jsonPath)
+    filename = 'example.ics'
+    jsonFilename = 'userData.json'
     
-    calendarPath = os.path.join(mainPath, "data", "data.ics")
-
-    with open(calendarPath) as file:
+    # Gets the schedual
+    calendarPath = pathlib.Path('../..') / 'data' / filename
+    if not calendarPath.is_file():
+        print('File',filename,'doesn\'t exist')
+        sys.exit()
+        
+    # Gets user settings
+    jsonPath = pathlib.Path('../..') / 'config' / jsonFilename 
+    if not jsonPath.is_file():
+        print('File',filename,'doesn\'t exist')
+        sys.exit()
+        
+    jsonFile = jsonPath.open()
+    
+    with calendarPath.open() as file:
         extractor = Extractor({"UID","DTSTAMP","LOCATION"})
         extractor.extractFromFile(file)
         classes = extractor.getClassList()
@@ -115,7 +133,7 @@ if __name__ == "__main__":
         classes = extractor.getDummyList()
         dummyClass = True
     
-    formate = Formater(classes, files)
+    formate = Formater(classes, jsonFile)
 
     if( dummyClass ):
         formate.createDummySchedual()
