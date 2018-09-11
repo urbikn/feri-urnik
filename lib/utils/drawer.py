@@ -81,7 +81,7 @@ class Drawer:
 
 if __name__ == '__main__':
     filename = 'example.ics'
-    path = pathlib.Path('../..') / 'data' / filename
+    path = pathlib.Path('../..') / 'test_data' / filename
     if not path.is_file():
         print('File',filename,'doesn\'t exist')
         sys.exit()

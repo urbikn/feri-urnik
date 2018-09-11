@@ -107,7 +107,7 @@ if __name__ == "__main__":
     jsonFilename = 'userData.json'
     
     # Gets the schedual
-    calendarPath = pathlib.Path('../..') / 'data' / filename
+    calendarPath = pathlib.Path('../..') / 'test_data' / filename
     if not calendarPath.is_file():
         print('File',filename,'doesn\'t exist')
         sys.exit()
