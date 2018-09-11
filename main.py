@@ -16,6 +16,8 @@ import lib.course as course
 import os, sys, inspect, time, getopt, json, datetime
 from pathlib import Path
 
+url = 'http://wise-tt.com/wtt_um_feri/'
+
 def checkDownloadTime():
     '''
     Checks if the calendar was downloaded this week. If not, saves new week in process_data.json and returns True.
@@ -25,13 +27,13 @@ def checkDownloadTime():
     week = datetime.date( date.year, date.month, date.day ).isocalendar()[1]
     path = Path.cwd() / 'config' / 'process_data.json'
 
-    with open( path , 'r') as file:
+    with path.open() as file:
         data = json.load(file)
     
     if( data["week"] < week  ):
         
         data["week"] = week
-        with open( path, 'w') as file:
+        with path.open('w') as file:
             json.dump(data, file)
 
         return True
@@ -48,7 +50,7 @@ if __name__ == "__main__":
 
     print("\n\t---- Downloading ----" )
     downloadPath = os.path.abspath(os.path.join( os.getcwd(), "data"))
-    download = downloader.Download("RIT UN", downloadPath)  
+    download = downloader.Download(url=url,downloadPath=downloadPath,program='RAČUNALNIŠTVO IN INFORMACIJSKE TEHNOLOGIJE (BU20)')  
     download.setUp()
     download.downloadUrnik()
     download.stop()

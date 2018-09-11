@@ -28,6 +28,12 @@ class Filter:
 
 
     def checkGroup(self, course):
+        '''
+        
+        
+        return: True/False
+        '''
+        
         className = course.courseName
         classGroup = course.group
         

@@ -6,6 +6,9 @@
 #
 # Distributed under terms of the MIT license.
 
+import pathlib
+import sys
+
 """
 
 """
@@ -75,3 +78,14 @@ class Drawer:
             val += "\n" + value
 
         return val
+
+if __name__ == '__main__':
+    filename = 'example.ics'
+    path = pathlib.Path('../..') / 'data' / filename
+    if not path.is_file():
+        print('File',filename,'doesn\'t exist')
+        sys.exit()
+    
+    
+    drawer = Drawer()
+    

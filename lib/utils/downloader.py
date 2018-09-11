@@ -107,6 +107,7 @@ class Download:
             Default is 'program'.
         """
     
+        time.sleep(3)
         wait = WebDriverWait(self.browser, 4)
         
         # Figures out which dropdown menu you mean to access
@@ -128,7 +129,7 @@ class Download:
         element = wait.until(EC.presence_of_element_located((By.ID, tagID + "_label")))
         element.click()
 
-        time.sleep(1)
+        time.sleep(2)
         
         # Finds the specific option based on 'data' in values
         print("Starting click for",values['name'] + ':', values['data'])
@@ -178,9 +179,9 @@ class Download:
         wait.until(EC.presence_of_element_located((By.ID, "content")))
 
         self.__clickDropdown(program=True)
-        if year: # if year is specified
+        if self.year: # if year is specified
             self.__clickDropdown(year=True)
-        if course: # if course is specified
+        if self.course: # if course is specified
             self.__clickDropdown(course=True)
             
         self.__downloadFile()
@@ -204,9 +205,9 @@ class Download:
 if __name__ == "__main__":
     mainPath = os.path.abspath(os.path.join( os.getcwd(), "../../data")) + '/'
     download = Download(url = "http://wise-tt.com/wtt_um_feri/",
-                        program = "RAČUNALNIŠTVO IN INFORMACIJSKE TEHNOLOGIJE UN (BU20)",
+                        program = "RAČUNALNIŠTVO IN INFORMACIJSKE TEHNOLOGIJE (BU20)",
                         year = 1,
-                        course = "RAČUNALNIŠTVO IN INFORMACIJSKE TEHNOLOGIJE (BU20)"
+                        course = "RIT UN - RAČUNALNIŠTVO IN INFORMACIJSKE TEHNOLOGIJE (BU20)",
                         downloadPath = mainPath)
 
     download.setUp()
