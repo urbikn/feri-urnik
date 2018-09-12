@@ -47,9 +47,21 @@ if __name__ == "__main__":
         if( not checkDownloadTime() ):
             sys.exit()
 
+    user_data = Path.cwd() / 'config' / 'userData.json'
+    json_user_data = None
+    if not user_data.is_file():
+        print('File','userData.json','doesn\'t exist')
+        sys.exit()
+    else:
+        user_data_json = json.load(user_data.open())
+    
     print("\n\t---- Downloading ----" )
     downloadPath = os.path.abspath(os.path.join( os.getcwd(), "data"))
-    download = downloader.Download(url=url,downloadPath=downloadPath,program='RAČUNALNIŠTVO IN INFORMACIJSKE TEHNOLOGIJE (BU20)', year=2)  
+    download = downloader.Download(url=url,
+                                   downloadPath=downloadPath,
+                                   program=user_data_json['info']['program'],
+                                   year=user_data_json['info']['year'],
+                                   course=user_data_json['info']['course'])  
     download.setUp()
     download.downloadUrnik()
     download.stop()
@@ -66,7 +78,6 @@ if __name__ == "__main__":
 
     time.sleep(1)
     print("\n\t---- Formatting ----" )
-    files = open("config/userData.json")
     errorStr = ""
     extrctDummy = False
     print("Starting to format raw data")
@@ -77,7 +88,7 @@ if __name__ == "__main__":
         extrData = extractor.getDummyList()
         extrctDummy = True
     
-    formater = formater.Formater(extrData, files)
+    formater = formater.Formater(extrData, user_data.open())
 
     if(extrctDummy):
         formater.createDummySchedual()

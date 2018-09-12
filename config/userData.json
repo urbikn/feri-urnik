@@ -1,4 +1,9 @@
 {
+    "info": {
+        "program":"RAČUNALNIŠTVO IN INFORMACIJSKE TEHNOLOGIJE (BU20)",
+        "year":"2",
+        "course":"RIT UN - RAČUNALNIŠTVO IN INFORMACIJSKE TEHNOLOGIJE"
+    },
     "groups": {
         "1":["angleščina",1],
         "2":["matematika",1],
