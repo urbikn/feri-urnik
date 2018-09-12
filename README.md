@@ -39,7 +39,13 @@ urnik -h
 
 ## Usage ##
 
-If you want to use the program with your information
+If you want to use the program with your information and not the default, then you need to change the the data in config/user_data.json by replacing:
+- program ('program'),
+- year ('leto'),
+- course ('smer')
+
+With the text from the main schedule website [WiseTimetable](https://wise-tt.com/wtt_um_feri/). **COPY THE ENTIRE TEXT AS IS, NOT JUST PART OF IT**
+ 
 
 ## Reporting bugs ##
 If the application goes south on you, please use GitHubs issue trackers and I'll see what we can do:  

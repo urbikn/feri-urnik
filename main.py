@@ -95,7 +95,7 @@ if __name__ == "__main__":
     else:
         formater.createSchedual()
 
-    schedual = formater.getSchedual()
+    schedule = formater.getSchedual()
 
     time.sleep(1)
     print("\n\t---- Writting to file ----" )
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     with open("data/urnik.txt", "w") as file:
         file.seek(0)
         file.truncate()
-        for i in schedual:
+        for i in schedule:
             file.write(i + "\n")
     
     print("\n\t---- Finished ----" )

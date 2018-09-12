@@ -69,7 +69,7 @@ printf ""
 # Creating cron
 # -----------------------
 printf "\n"
-read -t 10 -p "Would you like to have schedual updated every week? (y/N)" cronJob;
+read -t 10 -p "Would you like to have schedule updated every week? (y/N)" cronJob;
 printf "\n"
 
 if [ "$cronJob" = "y" ]; then

@@ -40,7 +40,7 @@ class Drawer:
 
     def drawTable(self, classes, num_day ):
         '''
-        Gets a list of classes and returns a string of a drawn table that represents the days schedual.
+        Gets a list of classes and returns a string of a drawn table that represents the days schedule.
         The function only get's classes for one day, not the whole week!
 
         '''

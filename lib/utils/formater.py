@@ -34,7 +34,7 @@ from utils.filters import Filter
 from utils.drawer import Drawer
 
 class Formater:
-    daysSchedual = []  #each entiry represents a new days schedual
+    daysSchedual = []  #each entiry represents a new days schedule
     jsonData = None
     classes = None
 
@@ -45,7 +45,7 @@ class Formater:
 
     def __makeTable(self, personal=False):
         '''
-        Creates a table of the schedual and returns that in a string.
+        Creates a table of the schedule and returns that in a string.
 
         Description:
         Arranges 'classes' and 'num_day' in 'day' list, each entiry is an list
@@ -67,7 +67,7 @@ class Formater:
         for entiry in self.classes:
             if not personal or filters.checkGroup(entiry):
                 
-                # Sees if the schedual changed to a new day
+                # Sees if the schedule changed to a new day
                 if(date < entiry.date):
                     day.append( {'num_day':date.weekday(),'classes':class_list} ) 
                     class_list = []
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     filename = 'example.ics'
     jsonFilename = 'user_data.json'
     
-    # Gets the schedual
+    # Gets the schedule
     calendarPath = pathlib.Path('../..') / 'test_data' / filename
     if not calendarPath.is_file():
         print('File',filename,'doesn\'t exist')
