@@ -63,12 +63,19 @@ sudo mv urnik /usr/local/bin/
 
 mkdir data 2> /dev/null
 
+
+printf ""
 # -----------------------
 # Creating cron
 # -----------------------
-#printf "${GREEN}\nWritting a line in cron\n${NC}"
-#(crontab -l 2>/dev/null; echo "00 * * * * $homePath/urnik/main.py") | crontab -
+printf "\n"
+read -t 10 -p "Would you like to have schedual updated every week? (y/N)" cronJob;
+printf "\n"
 
+if [ "$cronJob" = "y" ]; then
+    printf "${GREEN}\nWritting a line in cron\n${NC}"
+    (crontab -l 2>/dev/null; echo "15 * * * * $homePath/urnik/main.py") | crontab -
+fi
 
 
 # -----------------------
@@ -76,7 +83,6 @@ mkdir data 2> /dev/null
 # -----------------------
 printf "\n"
 read -t 10 -p "Would you like to start downloading schedule now? (y/N): " download;
-
 printf "\n"
 if [ "$download" = "y" ]; then
     printf "${RED}Starting process...${NC}"
