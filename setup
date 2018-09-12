@@ -94,6 +94,12 @@ printf "\n"
 printf "${RED}Please remember to add your laboratory groups in the config/user_data.json file, otherwise you won't have your groups shown";
 printf "\n"
 
-
+echo "Finished installing program. You can check command by typing 'urnik -h'. The installation folder has moved everything to $homePath/urnik directory"
 command -v notfy-send > /dev/null && notfy-send "Finished setting up urnik."
 
+# -----------------------
+# Remove entire folder
+# -----------------------
+currentDir=$(pwd | rev | cut -d '/' -f 1 | rev )
+cd ..
+rm -rf $currentDir
