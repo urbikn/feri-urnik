@@ -65,7 +65,7 @@ getDay () {
         day='PON'
     elif [ "$day" = "tue" ]; then
         day='TOR'
-    elif [ "$day" = "wen" ]; then
+    elif [ "$day" = "wed" ]; then
         day='SRE'
     elif [ "$day" = "thu" ]; then
         day='ČET'
