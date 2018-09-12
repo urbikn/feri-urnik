@@ -47,10 +47,10 @@ if __name__ == "__main__":
         if( not checkDownloadTime() ):
             sys.exit()
 
-    user_data = Path.cwd() / 'config' / 'userData.json'
+    user_data = Path.cwd() / 'config' / 'user_data.json'
     json_user_data = None
     if not user_data.is_file():
-        print('File','userData.json','doesn\'t exist')
+        print('File','user_data.json','doesn\'t exist')
         sys.exit()
     else:
         user_data_json = json.load(user_data.open())

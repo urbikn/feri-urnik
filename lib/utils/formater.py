@@ -104,7 +104,7 @@ if __name__ == "__main__":
     from extractor import Extractor
 
     filename = 'example.ics'
-    jsonFilename = 'userData.json'
+    jsonFilename = 'user_data.json'
     
     # Gets the schedual
     calendarPath = pathlib.Path('../..') / 'test_data' / filename

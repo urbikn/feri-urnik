@@ -91,7 +91,7 @@ else
     printf "${RED}REMEMBER: ${NC}Before calling command/script, download schedule with command ${GREEN}urnik -d${NC}"
 fi
 printf "\n"
-printf "${RED}Please remember to add your laboratory groups in the config/userData.json file, otherwise you won't have your groups shown";
+printf "${RED}Please remember to add your laboratory groups in the config/user_data.json file, otherwise you won't have your groups shown";
 printf "\n"
 
 

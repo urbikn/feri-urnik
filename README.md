@@ -1,7 +1,6 @@
 Urnik
 ============
 
-> **Warning:** For now it can only be used for the RIT program  
 > **OS Specific:** Linux  
 > **Python Version:** 3.x  
 
@@ -37,6 +36,10 @@ After the script finishes you can use the application via the command **urnik**.
 ``` bash
 urnik -h
 ```
+
+## Usage ##
+
+If you want to use the program with your information
 
 ## Reporting bugs ##
 If the application goes south on you, please use GitHubs issue trackers and I'll see what we can do:  
