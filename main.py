@@ -23,8 +23,7 @@ def checkDownloadTime():
     Checks if the calendar was downloaded this week. If not, saves new week in process_data.json and returns True.
     '''
 
-    date = datetime.datetime.now()
-    week = datetime.date( date.year, date.month, date.day ).isocalendar()[1]
+    week = datetime.datetime.now().isocalendar()[1]
     path = Path.cwd() / 'config' / 'process_data.json'
 
     with path.open() as file:
