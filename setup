@@ -55,7 +55,7 @@ cd "$homePath/urnik"
 rm -rf .git* setup
 
 # Changes command inside urnik shell (command is cd ..path..)
-sed -i '104i cd '"$homePath"'/urnik' urnik 
+sed -i '58i cd '"$homePath"'/urnik' urnik 
 
 
 printf "${GREEN}\nMoving script 'urnik' to /usr/local/bin/.\n${NC}"
