@@ -96,10 +96,3 @@ printf "\n"
 
 echo "Finished installing program. You can check command by typing 'urnik -h'. The installation folder has moved everything to $homePath/urnik directory"
 command -v notfy-send > /dev/null && notfy-send "Finished setting up urnik."
-
-# -----------------------
-# Remove entire folder
-# -----------------------
-currentDir=$(echo "$downloadPath" | rev | cut -d '/' -f 1 | rev )
-cd "$downloadPath"/..
-rm -rf $currentDir
