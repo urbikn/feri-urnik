@@ -90,7 +90,7 @@ else # Display course
 
     # Gets section of schedule based on wheather it is custom or entire
     if $GENERAL; then # General schedule
-        cat $FILENAME | sed -e '1,/!.*!/d'| tail -n +5 > "$tmpfile"
+        cat $FILENAME | sed -n '1,/!.*!/p' | tail -n +4 | head -n -2 > "$tmpfile"
         
     else # Custom user schedule
         cat $FILENAME | sed -ne '/!.*!/,$p'| tail -n +6 > "$tmpfile"
