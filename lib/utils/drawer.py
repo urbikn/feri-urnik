@@ -45,6 +45,10 @@ class Drawer:
 
         '''
 
+        # in case classes is empty
+        if not classes:
+            return ""
+
         string = [""]*9 # The height of the table
 
         day = ["PON","TOR","SRE","ČET","PET"][num_day]
