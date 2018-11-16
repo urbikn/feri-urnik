@@ -76,7 +76,7 @@ class Download:
         try:
             self.browser.get(self.url)
 
-        except WebDriverExcepton:
+        except WebDriverException:
             from urllib import error,request
             
             print("""\nError: Cannot connect to website.

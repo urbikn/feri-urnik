@@ -6,7 +6,7 @@
 #
 # Distributed under terms of the MIT license.
 
-import lib.utils.downloader as downloader
+import lib.downloader.downloader as downloader
 import lib.utils.extractor as extractor
 import lib.utils.formater as formater
 import lib.utils.filters as filters
