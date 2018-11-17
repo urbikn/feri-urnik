@@ -20,6 +20,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import *
 
+import menu
+
 import time
 import os
 import sys, getopt
