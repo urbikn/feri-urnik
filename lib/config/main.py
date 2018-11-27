@@ -16,7 +16,7 @@ user_data_path = '../../config/user_data.json'
 user_data_types = ['program','year','course'] # The way they're specified in the user_data.json
 
 
-def change(data, type):
+def changeWithData(data, type):
     '''
     Uses data to get list of available options and user decides which one to chose by inputing a number of the option
 
@@ -64,4 +64,22 @@ def change(type):
     return:
         None
     '''
+    import sys
+    sys.path.append('../downloader')
+    from downloader import Download
+    import menu
+
+    # Creates a browser, loads website and gets list inside menu
+    download = Download()
+    download.setUp()
+    data = menu.listItems(download.browser,type)
+
+    # Changes configuration inside user_json
+    changeWithData(data,type)
+
+    download.stop()
+
+    
+
+
     pass
