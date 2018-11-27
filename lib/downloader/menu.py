@@ -95,7 +95,7 @@ def listItems( browser, type ):
 
 
 
-def clickitem( browser, type, data ):
+def clickItem( browser, type, data ):
     '''
     Clicks an item inside the dropdown menu.
 
