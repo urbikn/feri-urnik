@@ -31,7 +31,12 @@ def __reconfigure__(browser,type):
     return:
         None
     '''
-    pass
+    data = listItems(browser,type)
+
+    import sys
+    sys.path.append("../config")
+    import main
+    main.change(data,type)
 
 
 def findMenu( browser, type ):
