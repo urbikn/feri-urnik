@@ -10,7 +10,13 @@
     The main script to change program/year/course in confg/user_data.json file
 """
 
-def Change(data, type):
+import json
+
+user_data_path = '../../config/user_data.json'
+user_data_types = ['program','year','course'] # The way they're specified in the user_data.json
+
+
+def change(data, type):
     '''
     Uses data to get list of available options and user decides which one to chose by inputing a number of the option
 
@@ -21,8 +27,34 @@ def Change(data, type):
     return:
         None
     '''
+    
+    options = [ data[i][1] for i in range(len(data)) ]
+    print(user_data_types[type].capitalize(), "options to choose from:"  )
+    for i in range(len(options)):
+        print("   [{0}] {1}".format(i+1, options[i]))
 
-def Change(type):
+    number = None
+    while True:
+        value = input("Number selected: ")
+        # In case someone inputs something that isn't a number
+        try:  number = int(value) - 1
+        except ValueError: print("Wrong input inserted. I need a number..")
+        break
+
+    choice = options[number]
+    with open(user_data_path, 'r+') as f:
+        data = json.loads(f.read())
+        data['info'][ user_data_types[type] ] = choice
+        f.seek(0)
+        json.dump(data, f, indent=4, ensure_ascii=False)
+        f.truncate()
+
+    print("Updated", user_data_types[type].capitalize(),"\n")
+
+
+
+
+def change(type):
     '''
     Gets data from lib.downloader.downloader & lib.downloader.menu to get list of available options and user decides which one to chose by inputing a number of the option
 

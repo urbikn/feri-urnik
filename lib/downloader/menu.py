@@ -16,8 +16,23 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
+types = ['program','year','course']
 wait = None
 tagID = None
+
+def __reconfigure__(browser,type):
+    '''
+    Reconfigures specified type settings in user configuration
+
+    args:
+        browser (webdriver.Firefox)             - object to use the browser,
+        type (int) (0:program,1:year,2:course ) - to specify which dropdown menu to use
+
+    return:
+        None
+    '''
+    pass
+
 
 def findMenu( browser, type ):
     '''
@@ -92,9 +107,15 @@ def clickitem( browser, type, data ):
 
     # Finds and clicks the specific item using data as a value by which to search
     script = """return $(document.getElementById('{0}')).find("li[data-label='{1}']")[0].id""".format(tagID+'_items',data)
-    ID = browser.execute_script(script)
-    elementType = wait.until(EC.presence_of_element_located((By.ID, ID )))
-    elementType.click()
+    try:
+        ID = browser.execute_script(script)
+        elementType = wait.until(EC.presence_of_element_located((By.ID, ID )))
+        elementType.click()
+    except:
+        print("Couldn't find",types[type], data)
+        print("Need to reconfigure settings")
+        __reconfigure__(browser,type)
+
 
 
 
