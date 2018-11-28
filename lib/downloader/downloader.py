@@ -42,7 +42,7 @@ path = os.path.realpath(
 if path not in sys.path:
     sys.path.insert(0, path)
 
-import downloader.menu
+import downloader.menu as menu
 
 class Download:
     browser = None
@@ -61,21 +61,21 @@ class Download:
     def __init__(self, url=None, downloadPath=None, program=None,year=None, course=None):
         self.profile.set_preference("browser.download.folderList", 2)
         self.profile.set_preference("browser.download.manager.showWhenStarting", False)
-        if not downloadPath:
+        if downloadPath:
             self.profile.set_preference("browser.download.dir", downloadPath)
         self.profile.set_preference("browser.helperApps.neverAsk.saveToDisk",
                                     "application/octet-stream, text/calendar,application/vnd.sus-calendar,text/x-vcalendar")
-        self.options.add_argument("--headless")  # Option to hide browser (Comment line to see browser)
-        self.browser = webdriver.Firefox(firefox_profile=self.profile,
-     
-                
-        firefox_options=self.options)
+     #   self.options.add_argument("--headless")  # Option to hide browser (Comment line to see browser)
+        self.browser = webdriver.Firefox(
+                firefox_profile=self.profile,
+                firefox_options=self.options
+                )
 
-        if not url: self.url = url
-        if not program: self.program = program
-        if not year: self.year = year
-        if not course: self.course = course
-        if not downloadPath:
+        if url: self.url = url
+        if program: self.program = program
+        if year: self.year = year
+        if course: self.course = course
+        if downloadPath:
             self.downloadPath = downloadPath
             self.filename = downloadPath + "/calendar.ics"
             self.renameFile = downloadPath + "/data.ics"
@@ -161,9 +161,9 @@ class Download:
         # Waits for browser to load website
         wait.until(EC.presence_of_element_located((By.ID, "content")))
 
-        menu.clickItem(self.browser,program)
-        menu.clickItem(self.browser,year)
-        menu.clickItem(self.browser,course)
+        menu.clickItem(self.browser,0,self.program)
+        menu.clickItem(self.browser,1,self.year)
+        menu.clickItem(self.browser,2,self.course)
             
         self.__downloadFile()
         

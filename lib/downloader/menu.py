@@ -53,7 +53,7 @@ def findMenu( browser, type ):
         ( For now the website works by using the ID and adding string to represent something
           like for example ID_label, ID_items, etc.  )
     '''
-    
+    global wait   
     wait = webdriver.support.ui.WebDriverWait(browser,4)
 
     # Finds the ID of the dropdown menu in the DOM
@@ -90,6 +90,7 @@ def listItems( browser, type ):
         if( data.text.strip() ): # text isn't empty
             output.append( ( data.get_attribute('id') , data.text) )
 
+    findMenu(browser,type)
     return output
 
 
@@ -116,6 +117,7 @@ def clickItem( browser, type, data ):
         ID = browser.execute_script(script)
         elementType = wait.until(EC.presence_of_element_located((By.ID, ID )))
         elementType.click()
+        time.sleep(2)
     except:
         print("Couldn't find",types[type], data)
         print("Need to reconfigure settings")
