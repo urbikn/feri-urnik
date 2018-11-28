@@ -82,12 +82,14 @@ fi
 # Download schedule
 # -----------------------
 printf "\n"
+
 read -t 10 -p "Would you like to start downloading schedule now? (y/N): " download;
 printf "\n"
 if [ "$download" = "y" ]; then
     printf "${RED}Starting process...${NC}"
     urnik -d
 else
+    urnik -r
     printf "${RED}REMEMBER: ${NC}Before calling command/script, download schedule with command ${GREEN}urnik -d${NC}"
 fi
 printf "\n"

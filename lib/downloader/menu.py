@@ -16,8 +16,28 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
+types = ['program','year','course']
 wait = None
 tagID = None
+
+def __reconfigure__(browser,type):
+    '''
+    Reconfigures specified type settings in user configuration
+
+    args:
+        browser (webdriver.Firefox)             - object to use the browser,
+        type (int) (0:program,1:year,2:course ) - to specify which dropdown menu to use
+
+    return:
+        None
+    '''
+    data = listItems(browser,type)
+
+    import sys
+    sys.path.append("../config")
+    import main
+    main.changeWithData(data,type)
+
 
 def findMenu( browser, type ):
     '''
@@ -33,7 +53,7 @@ def findMenu( browser, type ):
         ( For now the website works by using the ID and adding string to represent something
           like for example ID_label, ID_items, etc.  )
     '''
-    
+    global wait   
     wait = webdriver.support.ui.WebDriverWait(browser,4)
 
     # Finds the ID of the dropdown menu in the DOM
@@ -70,12 +90,13 @@ def listItems( browser, type ):
         if( data.text.strip() ): # text isn't empty
             output.append( ( data.get_attribute('id') , data.text) )
 
+    findMenu(browser,type)
     return output
 
 
 
 
-def clickitem( browser, type, data ):
+def clickItem( browser, type, data ):
     '''
     Clicks an item inside the dropdown menu.
 
@@ -92,9 +113,16 @@ def clickitem( browser, type, data ):
 
     # Finds and clicks the specific item using data as a value by which to search
     script = """return $(document.getElementById('{0}')).find("li[data-label='{1}']")[0].id""".format(tagID+'_items',data)
-    ID = browser.execute_script(script)
-    elementType = wait.until(EC.presence_of_element_located((By.ID, ID )))
-    elementType.click()
+    try:
+        ID = browser.execute_script(script)
+        elementType = wait.until(EC.presence_of_element_located((By.ID, ID )))
+        elementType.click()
+        time.sleep(2)
+    except:
+        print("Couldn't find",types[type], data)
+        print("Need to reconfigure settings")
+        __reconfigure__(browser,type)
+
 
 
 

@@ -11,7 +11,7 @@
 tmpfile=$(mktemp /tmp/urnik.XXXXXX)
 FILENAME='data/urnik.txt'
             
-OPTS=$(getopt -o gwhd --long general,entire-week,download,help: -n 'parse-options' -- "$@")
+OPTS=$(getopt -o grwhd --long general,entire-week,download,reconfigure,help: -n 'parse-options' -- "$@")
 
 if [ $? != 0 ] ; then echo -e "Failed parsing options." >&2 ; exit 1 ; fi
 
@@ -19,9 +19,10 @@ eval set -- "$OPTS"
 
 GENERAL=false
 ENTIRE_WEEK=false
+RECONFIG=false
 HELP=false
 DOWNLOAD=false
-USE_SED=true
+USE_SED=false
 day=''
 data=''
 
@@ -29,9 +30,10 @@ data=''
 
 while true; do
   case "$1" in
-    -g | --general ) GENERAL=true; shift ;;
-    -w | --entire-week )    ENTIRE_WEEK=true; shift ;;
-    -d | --download ) DOWNLOAD=true; shift ;;
+    -g | --general ) GENERAL=true; USE_SED=true shift ;;
+    -w | --entire-week )    ENTIRE_WEEK=true; USE_SED=true shift ;;
+    -d | --download ) DOWNLOAD="force_download"; shift ;;
+    -r | --reconfigure ) RECONFIG='reconfig'; shift ;;
     -h | --help ) HELP=true; shift ;;
     -- ) shift; break ;;
     * ) break ;;
@@ -39,10 +41,11 @@ while true; do
 done
 
 help () {
-    usage="$(basename 'urnik') [-g] [-w] [-h] [-d] -- Program to get my schedule for school (urnik pač):
+    usage="$(basename 'urnik') [-g] [-u] [-w] [-h] [-d] -- Program to get my schedule for school (urnik pač):
              \n\t-g, --general\t\tShows general schedule for program RIT
              \n\t-w, --entire-week\tDisables the function of showing todays schedule
              \n\t-d, --download\t\tDownloads the weeks schedule
+             \n\t-r, --reconfigure\t\tReconfigures user settings about program, year and course
              \n\n\nExamples:
              \n\turnik\t\tGets you custom schedule for that day
              \n\turnik -g\tGets the general schedule for that day
@@ -82,10 +85,11 @@ getDay () {
 
 if $HELP; then
     help
-elif $DOWNLOAD; then
-    python3 main.py "force_download"
-    command -v notify-send > /dev/null && notify-send -t 0 "Finished downloading schedule."
-    USE_SED=false
+elif [ ! -z "$DOWNLOAD" ] || [ ! -z "$RECONFIG" ] ; then
+    python3 main.py "$DOWNLOAD" "$RECONFIG"
+    if [ ! -z "$DOWLOAD" ]; then
+        command -v notify-send > /dev/null && notify-send -t 0 "Finished downloading schedule."
+    fi
 else # Display course
 
     # Gets section of schedule based on wheather it is custom or entire
