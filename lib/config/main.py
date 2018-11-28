@@ -54,7 +54,7 @@ def changeWithData(data, type):
 
 
 
-def change(type):
+def change(type, browser=None):
     '''
     Gets data from lib.downloader.downloader & lib.downloader.menu to get list of available options and user decides which one to chose by inputing a number of the option
 
@@ -64,22 +64,40 @@ def change(type):
     return:
         None
     '''
-    import sys
-    sys.path.append('../downloader')
-    from downloader import Download
+    if not browser:
+        import sys
+        sys.path.append('../downloader')
+        from downloader import Download
+
+        # Creates a browser, loads website and gets list inside menu
+        download = Download()
+        download.setUp()
+
+        browser = download.browser
+
     import menu
 
+<<<<<<< HEAD
     # Creates a browser, loads website and gets list inside menu
     download = Download()
     download.setUp()
     data = menu.listItems(download.browser,type)
 
+=======
+
+    # websites generates by first clicking program, which generates year and clicking year generates courses ( and that's what I'm doing )
+    if type > 0:
+        f = open(user_data_path,'r')
+        data = json.loads(f.read())['info']
+        b = 0
+        while b != type:
+            menu.clickItem(browser,b,data[user_data_types[b]])
+            b+=1
+
+
+    data = menu.listItems(browser,type)
+>>>>>>> e6c6d92... Add instance of browser as paramater in configuration script
     # Changes configuration inside user_json
     changeWithData(data,type)
 
     download.stop()
-
-    
-
-
-    pass
