@@ -90,14 +90,6 @@ def change(type, browser=None, nextSet=False):
 
     import downloader.menu as menu
 
-<<<<<<< HEAD
-    # Creates a browser, loads website and gets list inside menu
-    download = Download()
-    download.setUp()
-
-<<<<<<< HEAD
-=======
-=======
     # websites generates by first clicking program, which generates year and clicking year generates courses ( and that's what I'm doing )
     if type > 0:
         f = open(user_data_path,'r')
@@ -109,22 +101,6 @@ def change(type, browser=None, nextSet=False):
 
 
     data = menu.listItems(download.browser,type)
-    # Changes configuration inside user_json
-    changeWithData(data,type)
->>>>>>> 5c3f647... config.main when change goes through program & year if course selected
-
-    # websites generates by first clicking program, which generates year and clicking year generates courses ( and that's what I'm doing )
-    if type > 0 and not nextSet:
-        f = open(user_data_path,'r')
-        data = json.loads(f.read())['info']
-        b = 0
-        while b != type:
-            menu.clickItem(browser,b,data[user_data_types[b]])
-            b+=1
-
-
-    data = menu.listItems(browser,type)
->>>>>>> e6c6d92... Add instance of browser as paramater in configuration script
     # Changes configuration inside user_json
     changeWithData(data,type)
     # uses new data and 

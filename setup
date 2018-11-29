@@ -48,7 +48,7 @@ homePath=$(pwd)
 
 printf "${GREEN}\nMoving downloaded directory to ${homePath}.\n${NC}"
 cp -r "$downloadPath" "$homePath" 2> /dev/null
-#mv $homePath/feri-urnik urnik
+mv "$(ls . -1l | grep -E 'feri-urnik' | rev | cut -d " " -f 1 | rev)" urnik
 cd "$homePath/urnik"
 
 # Removes git repo and script setup from directory
@@ -69,7 +69,7 @@ printf ""
 # Creating cron
 # -----------------------
 printf "\n"
-read -t 10 -p "Would you like to have schedule updated every week? (y/N)" cronJob;
+read -p "Would you like to have schedule updated every week? (y/N)" cronJob;
 printf "\n"
 
 if [ "$cronJob" = "y" ]; then
@@ -83,11 +83,11 @@ fi
 # -----------------------
 printf "\n"
 
-read -t 10 -p "Would you like to start downloading schedule now? (y/N): " download;
+read -p "Would you like to start downloading schedule now? (y/N): " download;
 printf "\n"
 if [ "$download" = "y" ]; then
     printf "${RED}Starting process...${NC}"
-    urnik -d
+    urnik -dr
 else
     urnik -r
     printf "${RED}REMEMBER: ${NC}Before calling command/script, download schedule with command ${GREEN}urnik -d${NC}"

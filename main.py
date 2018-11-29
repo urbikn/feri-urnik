@@ -42,40 +42,7 @@ def checkDownloadTime():
 
     return False
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-if __name__ == "__main__":
-=======
 def startBrowser():
-=======
-def startBrowser():
-    downloadPath = os.path.abspath(os.path.join( os.getcwd(), "data"))
-    download = downloader.Download(url=url,
-                                   downloadPath=downloadPath,
-                                   program=user_data_json['info']['program'],
-                                   year=user_data_json['info']['year'],
-                                   course=user_data_json['info']['course'])  
-    download.setUp()
-    browser_up = True
-    return download
-
-
-if __name__ == "__main__":
-    download = None
-
-    if 'reconfig' in sys.argv[1:]:
-        download = startBrowser()
-        for i in range(3):
-            config.change(i,download.browser)
-
-    # Check if it wasn't a force run ( so not manually wanting to download data )
-    if "force_download" not in sys.argv[1:]:
-        if( not checkDownloadTime() ):
-            if browser_up: download.stop()
-            sys.exit()
-
->>>>>>> 4b54e85... My code uses AI testing to make decisions
     user_data = Path.cwd() / 'config' / 'user_data.json'
     json_user_data = None
     if not user_data.is_file():
@@ -107,7 +74,6 @@ if __name__ == "__main__":
             time.sleep(2)
         if 'download' not in sys.argv[1:]:
             sys.exit()
->>>>>>> b72c2e7... Create configuration process for urnik program
 
     # Check if it wasn't a force run ( so not manually wanting to download data )
     if "force_download" not in sys.argv[1:]:
