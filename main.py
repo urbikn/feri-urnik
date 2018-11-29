@@ -81,8 +81,8 @@ if __name__ == "__main__":
         download = startBrowser()
         for i in range(3):
             config.change(i,download.browser,True)
-            time.sleep(2)
-        if 'download' not in sys.argv[1:]:
+            time.sleep(1)
+        if 'force_download' not in sys.argv[1:]:
             sys.exit()
         download = restartSettingsInDownload(download)
 

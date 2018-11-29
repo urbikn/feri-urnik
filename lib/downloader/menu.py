@@ -117,7 +117,7 @@ def clickItem( browser, type, data ):
         ID = browser.execute_script(script)
         elementType = wait.until(EC.presence_of_element_located((By.ID, ID )))
         elementType.click()
-        time.sleep(2)
+        time.sleep(1)
     except:
         print("Couldn't find",types[type], data)
         print("Need to reconfigure settings")

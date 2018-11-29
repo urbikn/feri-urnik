@@ -48,14 +48,14 @@ homePath=$(pwd)
 
 printf "${GREEN}\nMoving downloaded directory to ${homePath}.\n${NC}"
 cp -r "$downloadPath" "$homePath" 2> /dev/null
-mv "$(ls . -1l | grep -E 'feri-urnik' | rev | cut -d " " -f 1 | rev)" urnik
+mv "$(ls . -1l | grep -E 'feri-urnik' | rev | cut -d " " -f 1 | rev)" urnik 2> /dev/null
 cd "$homePath/urnik"
 
 # Removes git repo and script setup from directory
 rm -rf .git* setup
 
 # Changes command inside urnik shell (command is cd ..path..)
-sed -i '58i cd '"$homePath"'/urnik' urnik 
+sed -i '84i cd '"$homePath"'/urnik' urnik 
 
 
 printf "${GREEN}\nMoving script 'urnik' to /usr/local/bin/.\n${NC}"

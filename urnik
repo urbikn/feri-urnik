@@ -19,10 +19,10 @@ eval set -- "$OPTS"
 
 GENERAL=false
 ENTIRE_WEEK=false
-RECONFIG=false
+RECONFIG=''
 HELP=false
-DOWNLOAD=false
-USE_SED=false
+DOWNLOAD=''
+USE_SED=true
 day=''
 data=''
 
@@ -30,8 +30,8 @@ data=''
 
 while true; do
   case "$1" in
-    -g | --general ) GENERAL=true; USE_SED=true shift ;;
-    -w | --entire-week )    ENTIRE_WEEK=true; USE_SED=true shift ;;
+    -g | --general ) GENERAL=true; shift ;;
+    -w | --entire-week )    ENTIRE_WEEK=true; shift ;;
     -d | --download ) DOWNLOAD="force_download"; shift ;;
     -r | --reconfigure ) RECONFIG='reconfig'; shift ;;
     -h | --help ) HELP=true; shift ;;
@@ -45,7 +45,7 @@ help () {
              \n\t-g, --general\t\tShows general schedule for program RIT
              \n\t-w, --entire-week\tDisables the function of showing todays schedule
              \n\t-d, --download\t\tDownloads the weeks schedule
-             \n\t-r, --reconfigure\t\tReconfigures user settings about program, year and course
+             \n\t-r, --reconfigure\tReconfigures user settings about program, year and course
              \n\n\nExamples:
              \n\turnik\t\tGets you custom schedule for that day
              \n\turnik -g\tGets the general schedule for that day
@@ -53,7 +53,7 @@ help () {
              \n\nCopyright (C) Urban Knupleš
              \nDistributed under terms of the MIT license."
 
-    echo -e $usage
+    echo $usage
     USE_SED=false
 }
 
@@ -86,6 +86,7 @@ getDay () {
 if $HELP; then
     help
 elif [ ! -z "$DOWNLOAD" ] || [ ! -z "$RECONFIG" ] ; then
+    USE_SER=false
     python3 main.py "$DOWNLOAD" "$RECONFIG"
     if [ ! -z "$DOWLOAD" ]; then
         command -v notify-send > /dev/null && notify-send -t 0 "Finished downloading schedule."

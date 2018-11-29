@@ -49,9 +49,9 @@ def changeWithData(data, type):
         try:  
             number = int(value) - 1
             choice = options[number]       
+            break
         except ValueError: print("Wrong input inserted. I need a number..")
         except IndexError: print("That number doesn't exist in the list..")
-        break
 
     with open(user_data_path, 'r+') as f:
         data = json.loads(f.read())
@@ -78,6 +78,7 @@ def change(type, browser=None, nextSet=False):
         None
     '''
 
+
     if not browser:
         from downloader.downloader import Download
 
@@ -91,16 +92,16 @@ def change(type, browser=None, nextSet=False):
     import downloader.menu as menu
 
     # websites generates by first clicking program, which generates year and clicking year generates courses ( and that's what I'm doing )
-    if type > 0:
+    if type > 0 and not nextSet:
         f = open(user_data_path,'r')
         data = json.loads(f.read())['info']
         b = 0
         while b != type:
-            menu.clickItem(download.browser,b,data[user_data_types[b]])
+            menu.clickItem(browser,b,data[user_data_types[b]])
             b+=1
 
 
-    data = menu.listItems(download.browser,type)
+    data = menu.listItems(browser,type)
     # Changes configuration inside user_json
     changeWithData(data,type)
     # uses new data and 
