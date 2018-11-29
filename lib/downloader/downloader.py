@@ -65,7 +65,7 @@ class Download:
             self.profile.set_preference("browser.download.dir", downloadPath)
         self.profile.set_preference("browser.helperApps.neverAsk.saveToDisk",
                                     "application/octet-stream, text/calendar,application/vnd.sus-calendar,text/x-vcalendar")
-     #   self.options.add_argument("--headless")  # Option to hide browser (Comment line to see browser)
+        self.options.add_argument("--headless")  # Option to hide browser (Comment line to see browser)
         self.browser = webdriver.Firefox(
                 firefox_profile=self.profile,
                 firefox_options=self.options
