@@ -123,6 +123,12 @@ class Download:
         self.browser.quit()
 
 
+    def resetSettings(self,program=None,year=None,course=None):
+        if program: self.program = program
+        if year: self.year = year
+        if course: self.course = course
+
+
     def __downloadFile(self):
         wait = WebDriverWait(self.browser, 4)
         

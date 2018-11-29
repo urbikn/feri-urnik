@@ -20,6 +20,7 @@ from pathlib import Path
 
 url = 'http://wise-tt.com/wtt_um_feri/'
 browser_up = False
+user_data = None
 
 def checkDownloadTime():
     '''
@@ -43,6 +44,7 @@ def checkDownloadTime():
     return False
 
 def startBrowser():
+    global user_data
     user_data = Path.cwd() / 'config' / 'user_data.json'
     json_user_data = None
     if not user_data.is_file():
@@ -63,6 +65,14 @@ def startBrowser():
     return download
 
 
+def restartSettingsInDownload(download):
+    user_data_json = json.load(user_data.open())
+    download.resetSettings(program=user_data_json['info']['program'],
+                           year=user_data_json['info']['year'],
+                           course=user_data_json['info']['course'])  
+    return download
+
+
 if __name__ == "__main__":
     download = None
 
@@ -74,6 +84,7 @@ if __name__ == "__main__":
             time.sleep(2)
         if 'download' not in sys.argv[1:]:
             sys.exit()
+        download = restartSettingsInDownload(download)
 
     # Check if it wasn't a force run ( so not manually wanting to download data )
     if "force_download" not in sys.argv[1:]:
