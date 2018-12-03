@@ -24,7 +24,17 @@ class Filter:
         # RV -> Računalniške vaje
         # SE -> Seminar
         # PR -> Predavanje
-        self.classType = ["PR", "UN LV", "SV", "UN RV", "UN SE"]
+        self.classType = ["PR"]
+
+        self.workType =  [ "LV","SV", "SE", "RV"]
+        tmp = []
+        for i in self.workType:
+            tmp.append( "VS " + i )
+            tmp.append( "UN " + i )
+
+        self.workType.extend(tmp)
+
+        self.classType.extend( self.workType )
 
 
     def checkGroup(self, course):
@@ -41,19 +51,20 @@ class Filter:
         if "erasmus" in classGroup.lower():
             return False
 
+        test = classGroup.replace(',','').strip()
         for groupType in self.classType:
-            if groupType in classGroup:
+            if groupType in test:
                 typeGroup = groupType
         
         if "PR" == typeGroup:
             return True
-        elif typeGroup in {"UN LV","SV", "UN SV", "UN SE", "UN RV"}:
+        elif typeGroup in self.workType:
                 strNumber = classGroup.split(typeGroup)[1].strip()[0]
                 # If the group doesn't have any number ( so it's general
                 if not strNumber.isdigit():
                     return True
                 groupNumber = int(strNumber)
                 for group in self.groups:
-                    if( group[0] in className.lower() and group[1] == groupNumber):
+                    if ( group[0] in className.lower() and group[1] == groupNumber) or ( group[0] in className.lower() and group[1] == 0):
                         return True
         return False
