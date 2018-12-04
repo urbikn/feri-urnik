@@ -12,6 +12,7 @@ LGREEN='\033[1;32m'
 NC='\033[0m' # No color
 downloadPath=$(pwd)
 
+
 # -----------------------
 # Checks if script exists in /usr/bin
 # -----------------------
@@ -64,8 +65,8 @@ cp -r "$downloadPath" "$homePath" 2> /dev/null
 mv "$(ls . -1l | grep -E 'feri-urnik' | rev | cut -d " " -f 1 | rev)" urnik 2> /dev/null
 cd "$homePath/urnik"
 
-# Removes git repo and script setup from directory
-rm -rf .git* setup
+# Removes git repo, script setup and image folder from directory
+rm -rf .git* setup img
 
 # Changes command inside urnik shell (command is cd ..path..)
 sed -i '84i cd '"$homePath"'/urnik' urnik 
