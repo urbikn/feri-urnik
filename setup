@@ -40,6 +40,19 @@ fi
 printf "\n${NC}"
 
 # -----------------------
+# Check if geckodriver installed
+# -----------------------
+data="$( type geckodriver )"
+test="$( expr 'geckodriver: not found' : "$data" )"
+if [ "$test" -ne 0 ]; then
+    printf "${LGREEN}Downloading geckodriver\n${NC}"
+    wget https://github.com/mozilla/geckodriver/releases/download/v0.23.0/geckodriver-v0.23.0-linux64.tar.gz   
+    tar -xvzf geckodriver*
+    chmod +x geckodriver
+    printf "${LGREEN}movin' geckodriver to /usr/local/bin/.\n${NC}"
+    sudo mv geckodriver /usr/local/bin/
+fi
+# -----------------------
 # Start moving script directory
 # -----------------------
 
@@ -86,7 +99,7 @@ printf "\n"
 read -p "Would you like to start downloading schedule now? (y/N): " download;
 printf "\n"
 if [ "$download" = "y" ]; then
-    printf "${RED}Starting process...${NC}"
+    printf "${RED}Starting process...\n${NC}"
     urnik -dr
 else
     urnik -r
