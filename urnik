@@ -86,7 +86,7 @@ getDay () {
 if $HELP; then
     help
 elif [ ! -z "$DOWNLOAD" ] || [ ! -z "$RECONFIG" ] ; then
-    USE_SER=false
+    USE_SED=false
     python3 main.py "$DOWNLOAD" "$RECONFIG"
     if [ ! -z "$DOWLOAD" ]; then
         command -v notify-send > /dev/null && notify-send -t 0 "Finished downloading schedule."
