@@ -4,6 +4,7 @@ Urnik
 > **OS Specific:** Linux  
 > **Distributions:** Debian/Ubuntu  
 > **Python Version:** 3.x  
+> **Testing:** Works on my machine
 
 A commandline utility to display FERIs schedule offline.  
 **Urnik** was my answer to FERIs WiseTimetable scheduling web application at the end of 2017.
@@ -57,4 +58,4 @@ And sometimes there are no groups but it's still not a lecture, so either set th
 If the application goes south on you, please use GitHubs issue trackers and I'll see what we can do:  
 https://github.com/urbikn/feri-urnik/issues
 
-or contact me via email at: urban@knuples.net
+or contact me via email at: urbikn@gmail.com

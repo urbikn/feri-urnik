@@ -116,10 +116,11 @@ if __name__ == "__main__":
     print("Starting to format raw data")
     
     if(len(extrData) == 0):
-        print("No data to format. Looks like you have a free week.")
+        print("\n\n=====\nNo data to format. Looks like you have a free week.\n=====\n\n")
         errorStr = " (even thought it's nothing)."
         extrData = extractor.getDummyList()
         extrctDummy = True
+        sys.exit(0)
     
     formater = formater.Formater(extrData, user_data.open())
 

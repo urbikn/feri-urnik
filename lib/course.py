@@ -29,7 +29,7 @@ class Course:
         elif str == type(date):
             self.setDateStr(str(date))
         elif datetime == type(date):
-            self.setDate(date)
+            self.date = date
         else:
             print('Couldn\'t write date value (class[0])')
     
