@@ -99,6 +99,7 @@ printf "\n"
 
 read -p "Would you like to start downloading schedule now? (y/N): " download;
 printf "\n"
+printf "First we need to configure your settings to know what specific schedule to download.\n"
 if [ "$download" = "y" ]; then
     printf "${RED}Starting process...\n${NC}"
     urnik -dr
