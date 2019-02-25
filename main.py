@@ -16,11 +16,22 @@ import lib.config.main as config
 import lib.course as course
 
 import os, sys, inspect, time, getopt, json, datetime
+import atexit
 from pathlib import Path
 
 url = 'http://wise-tt.com/wtt_um_feri/'
 browser_up = False
 user_data = None
+
+def clean_on_exit(browser ):
+    '''
+    shuts down the browser and cleans any unneeded data
+    '''
+
+    if browser != None:
+        if browser.isUp:
+            browser.stop()
+
 
 def checkDownloadTime():
     '''
@@ -76,15 +87,16 @@ def restartSettingsInDownload(download):
 if __name__ == "__main__":
     download = None
 
+
     if 'reconfig' in sys.argv[1:]:
         print("Time to reconfig")
         download = startBrowser()
+        atexit.register(clean_on_exit, download);
         for i in range(3):
             config.change(i,download.browser,True)
             time.sleep(1)
         if 'force_download' not in sys.argv[1:]:
             sys.exit()
-        download = restartSettingsInDownload(download)
 
     # Check if it wasn't a force run ( so not manually wanting to download data )
     if "force_download" not in sys.argv[1:]:
@@ -96,8 +108,8 @@ if __name__ == "__main__":
     if not browser_up:
         download = startBrowser()
 
+    atexit.register(clean_on_exit, download);
     download.downloadUrnik()
-    download.stop()
 
     print("\n\t---- Extraction ----" )
     with open("data/data.ics") as file:

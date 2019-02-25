@@ -27,7 +27,6 @@ import os
 import sys, getopt
 from pathlib import Path
 
-
 # Used when the main.py process imports this file and this files imports course, filters, ...
 path = os.path.realpath(
     os.path.abspath(
@@ -44,6 +43,8 @@ if path not in sys.path:
 
 import downloader.menu as menu
 
+TIME_SLEEP = 2
+
 class Download:
     browser = None
     url = None
@@ -55,6 +56,8 @@ class Download:
     profile = webdriver.FirefoxProfile()
     options = Options()
     url = "http://wise-tt.com/wtt_um_feri/"
+
+    isUp = False
 
 
 
@@ -114,6 +117,8 @@ class Download:
                 raise ConnectionRefusedError("Looks like they changed the URL.")
 
             sys.exit()
+
+        self.isUp = True
  
 
     def stop(self):
@@ -121,6 +126,7 @@ class Download:
             Kills browser process.
         """
         self.browser.quit()
+        self.isUp = False
 
 
     def resetSettings(self,program=None,year=None,course=None):
@@ -133,7 +139,7 @@ class Download:
         wait = WebDriverWait(self.browser, 4)
         
         print("Starting to download file")
-        time.sleep(1)
+        time.sleep(TIME_SLEEP)
         
         script = """return $("span:contains('iCal-teden')").parent()["""
         buttonDownloadId = self.browser.execute_script(script + "0].id")
@@ -167,8 +173,13 @@ class Download:
         # Waits for browser to load website
         wait.until(EC.presence_of_element_located((By.ID, "content")))
 
+        print("Searching for program")
         menu.clickItem(self.browser,0,self.program)
+        time.sleep(TIME_SLEEP)
+        print("Searching for year")
         menu.clickItem(self.browser,1,self.year)
+        time.sleep(TIME_SLEEP)
+        print("Searching for course")
         menu.clickItem(self.browser,2,self.course)
             
         self.__downloadFile()
@@ -181,7 +192,7 @@ class Download:
                           Starting new download
                           -------------------------
                        """)
-                time.sleep(1)
+                time.sleep(TIME_SLEEP)
                 n += 1
                 self.downloadUrnik(n)
                 return

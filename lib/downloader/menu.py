@@ -16,6 +16,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
+TIME_SLEEP = 2
+
 types = ['program','year','course']
 wait = None
 tagID = None
@@ -33,10 +35,14 @@ def __reconfigure__(browser,type):
     '''
     data = listItems(browser,type)
 
-    import sys
-    sys.path.append("../config")
-    import main
-    main.changeWithData(data,type)
+    import sys, os
+
+    print(sys.path)
+    print( os.getcwd() )
+
+    import lib.config.main 
+    import config.main as conf_main
+    conf_main.changeWithData(data,type)
 
 
 def findMenu( browser, type ):
@@ -79,7 +85,7 @@ def listItems( browser, type ):
     '''
 
     tagID = findMenu(browser, type)
-    time.sleep(2)
+    time.sleep(TIME_SLEEP)
 
     # Scripts gets all items inside menu
     script = "return (()=>{{return $('#{}').children()}})().toArray()".format(tagID.replace(':','\\\\:')+"_items")
@@ -109,7 +115,7 @@ def clickItem( browser, type, data ):
         None
     '''
     tagID = findMenu( browser, type )
-    time.sleep(2)
+    time.sleep(TIME_SLEEP)
 
     # Finds and clicks the specific item using data as a value by which to search
     script = """return $(document.getElementById('{0}')).find("li[data-label='{1}']")[0].id""".format(tagID+'_items',data)
@@ -117,7 +123,7 @@ def clickItem( browser, type, data ):
         ID = browser.execute_script(script)
         elementType = wait.until(EC.presence_of_element_located((By.ID, ID )))
         elementType.click()
-        time.sleep(1)
+        time.sleep(TIME_SLEEP)
     except:
         print("Couldn't find",types[type], data)
         print("Need to reconfigure settings")
