@@ -10,6 +10,8 @@
 
 """
 
+import re
+
 class Filter:
     groups = []
     classType = None
@@ -59,12 +61,14 @@ class Filter:
         if "PR" == typeGroup:
             return True
         elif typeGroup in self.workType:
-                strNumber = classGroup.split(typeGroup)[1].strip()[0]
-                # If the group doesn't have any number ( so it's general
-                if not strNumber.isdigit():
-                    return True
-                groupNumber = int(strNumber)
+                data = re.search(typeGroup+'\d', classGroup).group();
+
+                # Regex didn't find any group with a number
+                if data == None:
+                    return True 
+
+                groupNumber = int(data[-1])
                 for group in self.groups:
-                    if ( group[0] in className.lower() and group[1] == groupNumber) or ( group[0] in className.lower() and group[1] == 0):
+                    if group[0] in className.lower() and ( group[1] == groupNumber or group[1] == 0):
                         return True
         return False
