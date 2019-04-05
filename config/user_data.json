@@ -2,24 +2,24 @@
     "comment": "0 means that there is no group for it ( or just delete it )",
     "groups": {
         "3": [
-            "programiranje",
-            3
+            "",
+            0
         ],
         "5": [
-            "uporabniška",
-            3
+            "",
+            0
         ],
         "1": [
-            "angleščina",
-            1
+            "",
+            0
         ],
         "2": [
-            "matematika",
+            "",
             0
         ],
         "4": [
-            "osnove",
-            3
+            "",
+            0
         ]
     },
     "info": {
