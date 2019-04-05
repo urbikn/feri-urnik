@@ -61,7 +61,7 @@ class Filter:
         if "PR" == typeGroup:
             return True
         elif typeGroup in self.workType:
-                data = re.search(typeGroup+'\d', classGroup).group();
+                data = re.search(typeGroup+'.*\d', classGroup).group();
 
                 # Regex didn't find any group with a number
                 if data == None:
