@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # vim:fenc=utf-8
 #
-# Copyright © 2017 urbikn <urbikn@knuples.net>
+# Copyright © 2020 urbikn <urbikn@knuples.net>
 #
 # Distributed under terms of the MIT license.
 
