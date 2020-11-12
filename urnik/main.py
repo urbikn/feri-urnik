@@ -1,5 +1,6 @@
 import argparse
 from pathlib import Path
+import datetime
 
 from urnik.lib import util
 from urnik.lib.browser import browser
@@ -20,4 +21,10 @@ if __name__ == '__main__':
         browser.download_schedule("https://www.wise-tt.com/wtt_um_feri/index.jsp?filterId=0;79;0;0;")
 
     else:
-        pass
+        start = datetime.datetime(2020, 11, 9)
+        end = datetime.datetime(2020, 11, 15)
+
+        schedule = util.extract_schedule(ical_file, start, end, use_filter=True)
+        displayed_scheduler = util.display_schedule(schedule)
+
+        print(displayed_scheduler)
