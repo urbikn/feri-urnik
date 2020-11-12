@@ -7,7 +7,7 @@ from pathlib import Path
 
 from unidecode import unidecode
 from fuzzywuzzy import fuzz
-from icalevents.icalparser import Event
+import icalevents
 from icalevents.icalevents import events
 import yaml
 
@@ -34,7 +34,30 @@ def set_geckodriver() -> None:
     tar.close()
 
 
-def filter_schedule(all_events: [Event], config_path: str) -> [Event]:
+def parse_date(date_str: str, date_formats: [str]) -> datetime:
+    """
+    Parses date_str using different date_formats and returns the first valid datetime which the
+    datetime.strptime function could parse.
+
+    @param date_str: String encoded date
+    @param date_formats: List of datetime formats
+    @return: Parsed datetime
+    """
+    # This ugly code just tries every date_format until it can
+    # parse a legit one from the string.
+    for fmt in date_formats:
+        try:
+            date = datetime.datetime.strptime(date_str, fmt)
+
+            # Set to the current date if the user just specifies day.month format
+            date = date.replace(year=datetime.datetime.now().year)  # Just in case
+            return date
+        except ValueError:
+            continue
+    raise ValueError('Specify valid date string. ' + date_str + " isn't a valid string format.")
+
+
+def filter_schedule(all_events: [icalevents.icalparser.Event], config_path: str) -> [icalevents.icalparser.Event]:
     """
     Given a list of events the function filters out the subjects with the groups not matching the
     accepted groups specified by the user saved in the configuration file.
@@ -71,7 +94,7 @@ def filter_schedule(all_events: [Event], config_path: str) -> [Event]:
         matches = [user_subject['group'] for user_subject in user_groups if
                    fuzz.partial_ratio(user_subject['name'].lower(),
                                       subject.lower()) >= 90]  # Useful for grammar mistakes
-        matches = list(itertools.chain.from_iterable(matches)) # 2D to 1D list. Just in case.
+        matches = list(itertools.chain.from_iterable(matches))  # 2D to 1D list. Just in case.
 
         # This could probably be done better, I just don't know yet, so here's the explanation:
         # The idea behind the matches is to first filter out general groups from the events groups.
@@ -84,7 +107,6 @@ def filter_schedule(all_events: [Event], config_path: str) -> [Event]:
                     groups[i] = groups[i].replace(group, '').strip()
 
             if len("".join(groups)):
-                scores = [fuzz.partial_ratio(group, user_group) for group in groups for user_group in matches]
                 if any([fuzz.partial_ratio(group, user_group) >= 90 for group in groups for user_group in matches]):
                     filtered_events.append(event)
             else:
@@ -95,7 +117,8 @@ def filter_schedule(all_events: [Event], config_path: str) -> [Event]:
     return filtered_events
 
 
-def extract_schedule(file: str, start: datetime.datetime, end: datetime.datetime, use_filter=False) -> [Event]:
+def extract_schedule(file: str, start: datetime.datetime, end: datetime.datetime, use_filter=False) -> \
+                     [icalevents.icalparser.Event]:
     """
     Extract events from .ics file and return the events in a list
 
@@ -119,7 +142,7 @@ def extract_schedule(file: str, start: datetime.datetime, end: datetime.datetime
     return events_list
 
 
-def get_organizer(event: Event) -> [str]:
+def get_organizer(event: icalevents.icalparser.Event) -> [str]:
     """
     Return organizers of the event stored in the events description.
 
@@ -148,7 +171,7 @@ def get_organizer(event: Event) -> [str]:
     return organizers
 
 
-def get_groups(event: Event) -> [str]:
+def get_groups(event: icalevents.icalparser.Event) -> [str]:
     """
     Return groups of the event stored in the events description.
 
@@ -193,7 +216,7 @@ def create_cell_line(data: str, length: int) -> str:
     return string
 
 
-def create_cell(event: Event) -> [str]:
+def create_cell(event: icalevents.icalparser.Event) -> [str]:
     """
     Turn an event into a table cell by extracting the events duration, subject, location, organizers and
     subject groups (if any).
@@ -231,7 +254,7 @@ def create_cell(event: Event) -> [str]:
     return table
 
 
-def display_schedule(schedule: [Event]) -> str:
+def display_schedule(schedule: [icalevents.icalparser.Event]) -> str:
     """
     Create a table from all the events in list.
 
