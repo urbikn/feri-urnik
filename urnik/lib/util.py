@@ -2,6 +2,7 @@ import os
 import tarfile
 import datetime
 import re
+import itertools
 from pathlib import Path
 
 from unidecode import unidecode
@@ -52,6 +53,10 @@ def filter_schedule(all_events: [Event], config_path: str) -> [Event]:
     if user_groups is None:
         return all_events
 
+    lecture_events = [event for event in all_events if 'PR' in event.description.split(',')[1]]
+    general_groups = [get_groups(event) for event in lecture_events]
+    general_groups = set(itertools.chain.from_iterable(general_groups))  # Flatten 2D to 1D list and get unique groups
+
     filtered_events = []
     for event in all_events:
 
@@ -60,14 +65,29 @@ def filter_schedule(all_events: [Event], config_path: str) -> [Event]:
         subject = [desc.strip() for desc in event.description.split(',')][0]
         groups = get_groups(event)
 
-        # TODO: explain that this just check if the subjects are similar
-        # useful for grammar mistakes and such
+        # Finds all user specified groups of subject, if any specified
+        # The partial_ratio is used so if the user makes a grammar mistake or just
+        # specified part of the group
         matches = [user_subject['group'] for user_subject in user_groups if
-                   fuzz.partial_ratio(user_subject['name'].lower(), subject.lower()) >= 90]
+                   fuzz.partial_ratio(user_subject['name'].lower(),
+                                      subject.lower()) >= 90]  # Useful for grammar mistakes
+        matches = list(itertools.chain.from_iterable(matches)) # 2D to 1D list. Just in case.
 
+        # This could probably be done better, I just don't know yet, so here's the explanation:
+        # The idea behind the matches is to first filter out general groups from the events groups.
+        # The reason for this is that if this wasn't implemented, some events like SV (seminarske vaje)
+        # can have no specific group, but still can get caught by the matches.
         if len(matches):
-            # TODO: checks if the group is anywhere in the item and if so add
-            if any([fuzz.partial_ratio(group, user_group) >= 80 for group in groups for user_group in matches]):
+            # removes general groups event groups - easier to look if it has any group
+            for i in range(len(groups)):
+                for group in general_groups:
+                    groups[i] = groups[i].replace(group, '').strip()
+
+            if len("".join(groups)):
+                scores = [fuzz.partial_ratio(group, user_group) for group in groups for user_group in matches]
+                if any([fuzz.partial_ratio(group, user_group) >= 90 for group in groups for user_group in matches]):
+                    filtered_events.append(event)
+            else:
                 filtered_events.append(event)
         else:
             filtered_events.append(event)
@@ -181,7 +201,7 @@ def create_cell(event: Event) -> [str]:
     The function before constructing the cell calculates the longest string/line which determines the width
     of the entire cell.
 
-    A picture of the functions returned cell joined the strings lists with '\n'.
+    A picture of the functions returned cell.
 
         #####################
         #                   #
