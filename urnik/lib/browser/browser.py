@@ -4,16 +4,16 @@
     The entire browser process is done by using Selenium and Firefox
 
 """
+import time
+import os
+import sys
+import glob
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.firefox.options import Options
-
-import time
-import os
-import sys
-import logging
 
 
 class Browser:
@@ -22,7 +22,15 @@ class Browser:
 
     sleep = 2
 
-    def __init__(self, destination):
+    def __init__(self, destination: str, hide_browser=True) -> None:
+        """
+        A Browser class used for accessing the website from which it download the .ics file or schedule.
+
+        Uses the 'geckodriver' browser web engine.
+
+        @param destination: Folder path where the browsers saves downloaded files.
+        @param hide_browser: Should the object display the browser. Useful for debugging.
+        """
         profile = webdriver.FirefoxProfile()
         profile.set_preference("browser.download.folderList", 2)  # Browser will download to "browser.browser.dir"
         profile.set_preference("browser.download.manager.showWhenStarting", False)
@@ -31,17 +39,27 @@ class Browser:
                                "application/octet-stream, text/calendar,application/vnd.sus-calendar,text/x-vcalendar")
 
         options = Options()
-       #  options.add_argument("--headless")  # Hide browser window
+        if hide_browser:
+            options.add_argument("--headless")  # Hide browser window
 
         self.browser = webdriver.Firefox(firefox_profile=profile, firefox_options=options)
         self.destination = destination
 
-    def download_schedule(self, url):
+    def download_schedule(self, url: str) -> None:
+        """
+        Download the .ics file from the site using the url parameter.
+
+        @param url: Url of the site to download from
+        """
+
+        # First removes any ics file specified in the destination folder
+        for i in glob.iglob(str(self.destination) + "/*.ics"):
+            os.remove(i)
+
         self.browser.get(url)
 
         wait = WebDriverWait(self.browser, 4)
 
-        logging.info("The browser is loading the site")
         time.sleep(self.sleep)
 
         script = """return $("span:contains('iCal-teden')").parent()["""

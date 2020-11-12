@@ -117,8 +117,8 @@ def filter_schedule(all_events: [icalevents.icalparser.Event], config_path: str)
     return filtered_events
 
 
-def extract_schedule(file: str, start: datetime.datetime, end: datetime.datetime, use_filter=False) -> \
-                     [icalevents.icalparser.Event]:
+def extract_schedule(file: Path, start: datetime.datetime, end: datetime.datetime, use_filter=False) -> \
+        [icalevents.icalparser.Event]:
     """
     Extract events from .ics file and return the events in a list
 
@@ -133,7 +133,8 @@ def extract_schedule(file: str, start: datetime.datetime, end: datetime.datetime
     @param use_filter: Use group filtering specified in configuration file
     @return: List of extracted events of type icalevents.icalparser.Event
     """
-    events_list = events(file=file, start=start, end=end)
+
+    events_list = events(file=str(file), start=start, end=end)
 
     if use_filter:
         config_file = Path(__file__).parent.parent / "config.yaml"
