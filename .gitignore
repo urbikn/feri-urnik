@@ -5,3 +5,4 @@ build/*
 dist/*
 feri_urnik.egg-info/*
 .cache
+.idea

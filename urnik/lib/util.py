@@ -96,10 +96,10 @@ def filter_schedule(all_events: [icalevents.icalparser.Event], config_path: str)
                                       subject.lower()) >= 90]  # Useful for grammar mistakes
         matches = list(itertools.chain.from_iterable(matches))  # 2D to 1D list. Just in case.
 
-        # This could probably be done better, I just don't know yet, so here's the explanation:
+        # This could probably be done better, I just don't know how yet, so here's the explanation:
         # The idea behind the matches is to first filter out general groups from the events groups.
         # The reason for this is that if this wasn't implemented, some events like SV (seminarske vaje)
-        # can have no specific group, but still can get caught by the matches.
+        # can have no specific group, but still get caught by the matches.
         if len(matches):
             # removes general groups event groups - easier to look if it has any group
             for i in range(len(groups)):

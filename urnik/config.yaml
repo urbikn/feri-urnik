@@ -1,17 +1,16 @@
 # User settings
 # You can change the values, but please don't remove them.
-user:
-  # TODO: add a description of using the url for the user
+usera:
+  # The link of the wise timetable schedule you want the program to download.
+  # (to find out where to get this link look in this projects README.md under configuration > schedule)
   url: "https://www.wise-tt.com/wtt_um_feri/index.jsp?filterId=0;79;0;0;"
 
-  # TODO: explain how one can add diffrent groups and the group numbers
   groups:
     -
       name: "METODE IN TEHNOLOGIJE KOMUNICIRANJA"
       group:
-        # TODO: tell them to use the exact or similar group name as in wisetimetable for the program to work
-        # TODO: najboljse da jim das dobesedni primer stringa kako naj izpade
         - "RV 1. sk."
+        - "2" # This will work just as well
     -
       name: "REŠEVANJE PROBLEMOV S PROGRAMIRANJEM"
       group:
@@ -21,11 +20,9 @@ user:
 # You can change the values, but please don't remove them.
 app:
   # This variable specifies where to save the geckodriver used
-  # for creating and running the browser. This is only needed when
-  # the program can't find the geckodriver in any of the $PATH's maps.
+  # for creating and running the browser.
+  # This is only needed when the program can't find the geckodriver in any of the $PATH's maps.
   # The location tells the program where to save the downloaded geckodriver.
   # You can change the location to somewhere else, but it has to be
   # included in the $PATH!
   geckoLocationDownload: "~/.local/bin"
-
-

@@ -35,6 +35,7 @@ class Browser:
         profile.set_preference("browser.download.folderList", 2)  # Browser will download to "browser.browser.dir"
         profile.set_preference("browser.download.manager.showWhenStarting", False)
         profile.set_preference("browser.download.dir", destination)
+        profile.set_preference("webdriver.log.file", "/tmp/urnik_firefox_log")
         profile.set_preference("browser.helperApps.neverAsk.saveToDisk",
                                "application/octet-stream, text/calendar,application/vnd.sus-calendar,text/x-vcalendar")
 
@@ -56,10 +57,13 @@ class Browser:
         for i in glob.iglob(str(self.destination) + "/*.ics"):
             os.remove(i)
 
+        print("Starting browser")
+
         self.browser.get(url)
 
         wait = WebDriverWait(self.browser, 4)
 
+        print("Loading site")
         time.sleep(self.sleep)
 
         script = """return $("span:contains('iCal-teden')").parent()["""

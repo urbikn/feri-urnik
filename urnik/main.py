@@ -10,11 +10,8 @@ from urnik.lib import util
 from urnik.lib.browser import browser
 import yaml
 
-valid_date_formats = ["%d.%m", "%d.%m.%y"]
-ical_file = Path(__file__).parent.resolve() / "data/calendar.ics"
-config_file = Path(__file__).parent.resolve() / "config.yaml"
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser("urnik", formatter_class=argparse.RawDescriptionHelpFormatter,
                                      description=textwrap.dedent('''\
                                         Program to get my schedule for school (urnik pac)
@@ -31,15 +28,17 @@ if __name__ == '__main__':
     parser.add_argument("-e", "--end", type=str, metavar="date", help="Ending date of schedule. Date string format "
                                                                       "'d.m.y' or 'd.m'. If --start not specified "
                                                                       "auto uses begging of week")
-    parser.add_argument("-nf", "--no-filter", action='store_true', help="Disable filtering from user configuration. "
+    parser.add_argument("-f", "--no-filter", action='store_true', help="Disable filtering from user configuration. "
                                                                         "This just reads the entire schedule and "
                                                                         "displays it")
     parser.add_argument("-d", "--download", action='store_true', help="Download a schedule for the current week")
     parser.add_argument("-c", "--configure", action='store_true', help="Open configuration file of the program with "
                                                                        "$EDITOR")
-
-
     args = parser.parse_args()
+
+    valid_date_formats = ["%d.%m", "%d.%m.%y"]
+    ical_file = Path(__file__).parent.resolve() / "data/calendar.ics"
+    config_file = Path(__file__).parent.resolve() / "config.yaml"
 
     if not util.is_geckodriver():
         util.set_geckodriver()
@@ -54,13 +53,13 @@ if __name__ == '__main__':
 
     elif args.download:
         download_folder = str(ical_file.parent)
-        browser = browser.Browser(download_folder, hide_browser=True)
+        client = browser.Browser(download_folder, hide_browser=True)
 
         with open(config_file, "r") as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
             link = data['user'].get('url', "https://www.wise-tt.com/wtt_um_feri/")
 
-        browser.download_schedule(link)
+        client.download_schedule(link)
 
         print("Downloaded file to: " + str(download_folder))
 
@@ -78,8 +77,10 @@ if __name__ == '__main__':
         # Displaying a set interval date
         if args.start is not None:
             start = util.parse_date(args.start, valid_date_formats)
+            start = start.replace(hour=0)
         if args.end is not None:
             end = util.parse_date(args.end, valid_date_formats)
+            end = end.replace(hour=23)
 
         # If the file doesn't exist try to get first ics file in the files directory
         if not os.path.isfile(ical_file):
