@@ -1,4 +1,7 @@
 TODO.txt
-:
 __pycache__
 tags
+build/*
+dist/*
+feri_urnik.egg-info/*
+.cache
