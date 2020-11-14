@@ -1,3 +1,5 @@
+# User settings
+# You can change the values, but please don't remove them.
 user:
   # TODO: add a description of using the url for the user
   url: "https://www.wise-tt.com/wtt_um_feri/index.jsp?filterId=0;79;0;0;"
@@ -15,12 +17,15 @@ user:
       group:
         - "RV 2. sk."
 
-# this are configurations settings meant for the application
-# configure it if you wish, you won't really do any harm to the application
-# accapt if you don't have premission, than you is fuckkked
-# TODO: check for premissions for these settings
+# Application settings
+# You can change the values, but please don't remove them.
 app:
-  # TODO: explain the download folder for easier understanding
-  downloadfolder: "./data"
+  # This variable specifies where to save the geckodriver used
+  # for creating and running the browser. This is only needed when
+  # the program can't find the geckodriver in any of the $PATH's maps.
+  # The location tells the program where to save the downloaded geckodriver.
+  # You can change the location to somewhere else, but it has to be
+  # included in the $PATH!
+  geckoLocationDownload: "~/.local/bin"
 
 

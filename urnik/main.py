@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 import glob
 import textwrap
 from datetime import datetime, timedelta
@@ -23,10 +24,6 @@ if __name__ == '__main__':
                                         
                                      --------------------------------
                                      '''))
-    parser.add_argument("-d", "--download", action='store_true', help="Download a schedule for the current week")
-    parser.add_argument("-nf", "--no-filter", action='store_true', help="Disable filtering from user configuration. "
-                                                                        "This just reads the entire schedule and "
-                                                                        "displays it")
     parser.add_argument("-w", "--week", action="store_true", help="")
     parser.add_argument("-s", "--start", type=str, metavar="date", help="Starting date of schedule. Date string "
                                                                         "format 'd.m.y' or 'd.m'. If --end not "
@@ -34,12 +31,28 @@ if __name__ == '__main__':
     parser.add_argument("-e", "--end", type=str, metavar="date", help="Ending date of schedule. Date string format "
                                                                       "'d.m.y' or 'd.m'. If --start not specified "
                                                                       "auto uses begging of week")
+    parser.add_argument("-nf", "--no-filter", action='store_true', help="Disable filtering from user configuration. "
+                                                                        "This just reads the entire schedule and "
+                                                                        "displays it")
+    parser.add_argument("-d", "--download", action='store_true', help="Download a schedule for the current week")
+    parser.add_argument("-c", "--configure", action='store_true', help="Open configuration file of the program with "
+                                                                       "$EDITOR")
+
+
     args = parser.parse_args()
 
     if not util.is_geckodriver():
         util.set_geckodriver()
+    if args.configure:
+        editor = os.getenv('EDITOR')
 
-    if args.download:
+        if not os.path.isfile(config_file):
+            print("Couldn't find configuration file at location: " + str(config_file))
+            sys.exit()
+
+        os.system(editor + ' ' + str(config_file))
+
+    elif args.download:
         download_folder = str(ical_file.parent)
         browser = browser.Browser(download_folder, hide_browser=True)
 
@@ -70,9 +83,17 @@ if __name__ == '__main__':
 
         # If the file doesn't exist try to get first ics file in the files directory
         if not os.path.isfile(ical_file):
-            ical_file = Path(next(glob.iglob(str(ical_file.parent) + "/*.ics")))
+            ical_files = glob.glob(str(ical_file.parent) + "/*.ics")
+            if len(ical_files) == 0:
+                print("Program ni našel .ics datoteke. Uporabi argument '--download', da se prenese novi urnik.")
+                sys.exit()
+
+            ical_file = Path(ical_files[0])
 
         schedule = util.extract_schedule(ical_file, start, end, use_filter=(not args.no_filter))
         displayed_scheduler = util.display_schedule(schedule)
 
-        print(displayed_scheduler)
+        if len(displayed_scheduler):
+            print(displayed_scheduler)
+        else:
+            print("Danes nimaš pouka.")

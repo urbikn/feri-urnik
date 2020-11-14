@@ -34,7 +34,7 @@ class Browser:
         profile = webdriver.FirefoxProfile()
         profile.set_preference("browser.download.folderList", 2)  # Browser will download to "browser.browser.dir"
         profile.set_preference("browser.download.manager.showWhenStarting", False)
-        profile.set_preference("browser.download.dir", destination)  # TODO: change None .ini settings
+        profile.set_preference("browser.download.dir", destination)
         profile.set_preference("browser.helperApps.neverAsk.saveToDisk",
                                "application/octet-stream, text/calendar,application/vnd.sus-calendar,text/x-vcalendar")
 
@@ -75,7 +75,7 @@ class Browser:
 
             # Checks if the file hasn't been downloaded in in the directory self.downloadPath
             if (not any("calendar" in file for file in
-                        os.listdir(self.destination))):  # TODO: fix the download path problem, which should be get
+                        os.listdir(self.destination))):
                 time.sleep(0.4)
                 sys.stdout.write("\rDownloading {}".format("." * i))
                 sys.stdout.flush()

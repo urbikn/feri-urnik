@@ -22,7 +22,7 @@ setuptools.setup(
     ],
     keywords='FERI, urnik, scheduler, wisetimetable, iCal',
     python_requires='>=3.6',
-    install_requires=['selenium', 'icalevents', 'pyyaml', 'fuzzywuzzy'],
+    install_requires=['selenium', 'icalevents', 'pyyaml', 'fuzzywuzzy', 'unidecode'],
     package_data={
         'geckodriver': ['geckodriver-v0.28.0-linux64.tar.gz'],
     },
