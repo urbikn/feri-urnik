@@ -1,6 +1,6 @@
 # User settings
 # You can change the values, but please don't remove them.
-usera:
+user:
   # The link of the wise timetable schedule you want the program to download.
   # Example of how the link should look:
   # https://www.wise-tt.com/wtt_um_feri/index.jsp?filterId=0;79;0;0;
