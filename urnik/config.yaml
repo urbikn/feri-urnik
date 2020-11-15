@@ -2,19 +2,36 @@
 # You can change the values, but please don't remove them.
 usera:
   # The link of the wise timetable schedule you want the program to download.
-  # (to find out where to get this link look in this projects README.md under configuration > schedule)
+  # Example of how the link should look:
+  # https://www.wise-tt.com/wtt_um_feri/index.jsp?filterId=0;79;0;0;
+  # (to find out where to get this link look in this projects README.md under configuration >  Link to the schedule)
   url: "https://www.wise-tt.com/wtt_um_feri/index.jsp?filterId=0;79;0;0;"
 
+  # Groups contains a list of items that tell the program which subjects will be displayed based on
+  # their assigned group. So using the example below
+  #
+  #    name: "METODE IN TEHNOLOGIJE KOMUNICIRANJA"
+  #    group:
+  #      - "RV 1. sk."      # The exact string value is used on the site
+  #      - "2"              # This will work just as well
+  #
+  # the program will find entries in the schedule of the subject "METODE IN TEHNOLOGIJE KOMUNICIRANJA"
+  # and look if the subjects group match the any of the groups "RV 1. sk." or "2" and display it in the
+  # program. Under the hood the program uses partial string matching.
+  #
+  # Advice on variable values:
+  # - 'name': copy the name of the subject to keep things unique
+  # - 'group': copy the name of the group or write the groups number, either one will work
   groups:
     -
-      name: "METODE IN TEHNOLOGIJE KOMUNICIRANJA"
+      name: ""
+
       group:
-        - "RV 1. sk."
-        - "2" # This will work just as well
+        - ""
     -
-      name: "REŠEVANJE PROBLEMOV S PROGRAMIRANJEM"
+      name: ""
       group:
-        - "RV 2. sk."
+        - ""
 
 # Application settings
 # You can change the values, but please don't remove them.
